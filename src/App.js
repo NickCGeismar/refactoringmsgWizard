@@ -1,23 +1,25 @@
-import logo from './logo.svg';
 import './App.css';
+import React, { useEffect, useState } from "react";
+import Compose from "./components/Compose.js"
+import Preview from "./components/Preview.js"
+import Sender from "./components/Sender.js"
 
 function App() {
+  const [currentComponent, setCurrentComponent] = useState(<Compose/>)
+
+  const handleClick = () =>{
+    setCurrentComponent(<Preview/>)
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <div className="form-nav-bar">
+      </div>
+      <div className="current-component">
+        {currentComponent}
+      </div>
+      <div className="next-button">
+        <button className="btn" onClick={handleClick}>Next</button>
+      </div>
     </div>
   );
 }
