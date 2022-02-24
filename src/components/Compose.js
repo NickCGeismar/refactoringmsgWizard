@@ -1,9 +1,8 @@
 import React, {useEffect, useState } from "react"
 import { connect } from 'react-redux'
-import addCompose from '../redux'
+import {addCompose} from '../redux/msgWizard.js'
 
-
-function Compose(){
+function Compose(props){
     const [checkObject, setCheckObject] = useState({recipients: []})
 
     const [msgWizard, setMsgWizard] = useState({
@@ -40,6 +39,7 @@ function Compose(){
     }
 
     const handleSubmit = (event) =>{
+        event.preventDefault()
         if(event.target.name === "msg-subject"){
             msgWizard.subject = event.target.value
         }
@@ -48,13 +48,14 @@ function Compose(){
         }
     }
 
-    const saveToStore = () =>{
+    const saveToStore = (event) =>{
+        event.preventDefault()
         const storeObject = {
             ...checkObject,
             ...msgWizard
         }
-        console.log(saveToStore)
-        // addCompose(storeObject)
+        // console.log(props)
+        props.addTheCompose(storeObject)
     }
     return(
         <div>
@@ -96,7 +97,7 @@ const mapState = (state) =>({
 })
 
 const mapDispatch = (dispatch) =>({
-    addCompose : (composedInfo)=> dispatch(addCompose(composedInfo))
+    addTheCompose : (composedInfo)=> dispatch(addCompose(composedInfo))
 })
 
-export default Compose
+export default connect(mapState, mapDispatch)(Compose)

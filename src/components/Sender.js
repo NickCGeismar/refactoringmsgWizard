@@ -1,7 +1,10 @@
 import Modal from 'react-modal';
 import React, { useEffect, useState } from "react"
+import { addSender } from '../redux/msgWizard.js'
+import {connect} from 'react-redux'
 
-function Sender() {
+function Sender(props) {
+
 
     //States/////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,9 +56,10 @@ function Sender() {
                 state: formInfoAddress.state,
                 zip: formInfoAddress.zip
             })
+            props.addTheSender({...actualInfoAddress})
+
             setModalObj({ modalBool: false })
         }
-        console.log(event.target.id)
         if (event.target.id === "save-person") {
             setActualInfoPerson({
                 salutation: formInfoPerson.salutation,
@@ -222,4 +226,13 @@ function Sender() {
     )
 }
 
-export default Sender
+
+const mapState = (state) =>({
+    msgWizard: state.msgWizard
+})
+
+const mapDispatch = (dispatch) =>({
+    addTheSender : (senderInfo)=> dispatch(addSender(senderInfo))
+})
+
+export default connect(mapState, mapDispatch)(Sender)

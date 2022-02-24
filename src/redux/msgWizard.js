@@ -25,7 +25,21 @@ export const addSender = (senderInfo) => (dispatch) =>{
 }
 
 //INITIAL STATE 
-const initialState = {}
+const initialState = {
+    message: "",
+    recipients: [],
+    subject: "",
+    address1: "",
+    address2: "",
+    city: "",
+    state: "",
+    zip: "",
+    salutation: "",
+    firstname: "",
+    lastname: "",
+    email: "",
+    phone: "",
+}
 
 //REDUCER
 export default function (state = initialState, action){
