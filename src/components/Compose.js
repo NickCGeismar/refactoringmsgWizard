@@ -39,6 +39,7 @@ function Compose(props){
     }
 
     const handleSubmit = (event) =>{
+        console.log("handlesubmit")
         event.preventDefault()
         if(event.target.name === "msg-subject"){
             msgWizard.subject = event.target.value
@@ -49,6 +50,7 @@ function Compose(props){
     }
 
     const saveToStore = (event) =>{
+        console.log("is this happening when i hit enter")
         event.preventDefault()
         const storeObject = {
             ...checkObject,

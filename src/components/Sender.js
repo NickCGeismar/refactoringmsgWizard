@@ -47,6 +47,7 @@ function Sender(props) {
     //Onclick/onSubmit/function functions////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     const handleAddressSubmit = (event) => {
+        console.log(event.target.id)
         event.preventDefault()
         if (event.target.id === "save-address") {
             setActualInfoAddress({
@@ -68,6 +69,7 @@ function Sender(props) {
                 email: formInfoPerson.email,
                 phone: formInfoPerson.phone,
             })
+            props.addTheSender({...actualInfoPerson})
             setModalObj({ modalBool: false })
         }
     }
