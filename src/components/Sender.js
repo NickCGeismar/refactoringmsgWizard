@@ -1,7 +1,11 @@
 import Modal from 'react-modal';
-import React, { useEffect, useState } from "react"
-import { addSender } from '../redux/msgWizard.js'
-import {connect} from 'react-redux'
+import React, { useEffect, useState } from "react";
+import { addSender } from '../redux/msgWizard.js';
+import {connect} from 'react-redux';
+
+//This can incorporate redux functionality instead of having 2 states (removing actualInfoAddress)
+//once redux is setup it would prefill from the backend logged in user, two states are no longer necessary.
+//Leaving it in now to create dumby component
 
 function Sender(props) {
 

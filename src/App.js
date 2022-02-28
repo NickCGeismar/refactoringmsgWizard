@@ -9,10 +9,8 @@ let componentIndex = 0
 
 function App() {
   const [currentComponent, setCurrentComponent] = useState(componentArray[componentIndex])
-  console.log("render")
 
   const handleClick = (event) =>{
-    console.log("next or previous")
     event.preventDefault()
     if(event.target.id === "next" && componentIndex < 2){
       componentIndex += 1
