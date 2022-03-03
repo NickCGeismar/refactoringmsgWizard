@@ -5,57 +5,63 @@ import Modal from "react-modal";
 import { Button } from "react-bootstrap";
 import { ChatDots } from "react-bootstrap-icons";
 
-function Compose({ addTheCompose, msgWizard }) {
+function Compose({ addTheCompose, msgWizardResponse }) {
   const [modalBool, setModalBool] = useState(false);
-  const [checkObject, setCheckObject] = useState([]);
+  const [checkObjectPresident, setCheckObjectPresident] = useState(true);
+  const [showCheckObjectPresident, setShowCheckObjectPresident] =
+    useState(true);
+  const [checkObjectSenator, setCheckObjectSenator] = useState(true);
+  const [showCheckObjectSenator, setShowCheckObjectSenator] = useState(true);
+  const [checkObjectRepresentative, setCheckObjectRepresentative] =
+    useState(true);
+  const [showCheckObjectRepresentative, setShowCheckObjectRepresentative] =
+    useState(true);
   const [msgWizardCompose, setMsgWizardCompose] = useState({
     subject: "",
     message: "",
   });
 
-  useEffect(() => {}, [msgWizard]);
+  //predetermines boolean checkObject states from action_alert response
+  useEffect(() => {
+    // console.log(msgWizardResponse.form.recipients);
+  }, [msgWizardResponse.form.recipients]);
 
+  //sends recipients to store
+  useEffect(() => {
+    let checkObjectRecipients = [];
+    if (checkObjectPresident) {
+      checkObjectRecipients.push("president");
+    }
+    if (checkObjectSenator) {
+      checkObjectRecipients.push("sen");
+    }
+    if (checkObjectRepresentative) {
+      checkObjectRecipients.push("rep");
+    }
+    const storeObject = {
+      recipients: checkObjectRecipients,
+    };
+    addTheCompose(storeObject);
+  }, [checkObjectPresident, checkObjectSenator, checkObjectRepresentative]);
+
+  //sends composedmessages to store
   useEffect(() => {
     const storeObject = {
-      recipients: checkObject,
       ...msgWizardCompose,
     };
     addTheCompose(storeObject);
-  }, [checkObject, msgWizardCompose]);
+  }, [msgWizardCompose]);
 
-  const handleToggleRecipients = (event) => {
-    let index;
-    let newArray;
-    if (event.target.value === "president") {
-      index = checkObject.indexOf("president");
-      if (index > -1) {
-        checkObject.splice(index, 1);
-        setCheckObject([...checkObject]);
-      } else {
-        newArray = [...checkObject, "president"];
-        setCheckObject([...newArray]);
-      }
-    }
-    if (event.target.value === "senetor") {
-      index = checkObject.indexOf("sen");
-      if (index > -1) {
-        checkObject.splice(index, 1);
-        setCheckObject([...checkObject]);
-      } else {
-        newArray = [...checkObject, "sen"];
-        setCheckObject([...newArray]);
-      }
-    }
-    if (event.target.value === "representative") {
-      index = checkObject.indexOf("rep");
-      if (index > -1) {
-        checkObject.splice(index, 1);
-        setCheckObject([...checkObject]);
-      } else {
-        newArray = [...checkObject, "rep"];
-        setCheckObject([...newArray]);
-      }
-    }
+  const handleTogglePresident = (event) => {
+    setCheckObjectPresident(!checkObjectPresident);
+  };
+
+  const handleToggleSenator = (event) => {
+    setCheckObjectSenator(!checkObjectSenator);
+  };
+
+  const handleToggleRepresentative = (event) => {
+    setCheckObjectRepresentative(!checkObjectRepresentative);
   };
 
   const handleChange = (event) => {
@@ -92,29 +98,31 @@ function Compose({ addTheCompose, msgWizard }) {
       <h3>Message Recipients*</h3>
       <div>
         <input
-          onChange={handleToggleRecipients}
+          onChange={handleTogglePresident}
           type="checkbox"
           name="president"
           value="president"
-          checked={false}
+          checked={checkObjectPresident}
         />
         President
       </div>
       <div>
         <input
-          onChange={handleToggleRecipients}
+          onChange={handleToggleSenator}
           type="checkbox"
-          name="senetor"
-          value="senetor"
+          name="senator"
+          value="senator"
+          checked={checkObjectSenator}
         />
         Your U.S senators
       </div>
       <div>
         <input
-          onChange={handleToggleRecipients}
+          onChange={handleToggleRepresentative}
           type="checkbox"
           name="representative"
           value="representative"
+          checked={checkObjectRepresentative}
         />
         Your U.S representatives
       </div>
@@ -220,7 +228,7 @@ function Compose({ addTheCompose, msgWizard }) {
 }
 
 const mapState = (state) => ({
-  msgWizard: state.msgWizard,
+  msgWizardResponse: state.msgWizard.response,
 });
 
 const mapDispatch = (dispatch) => ({

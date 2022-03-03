@@ -58,20 +58,28 @@ export const lookupSenators = (senderInfo) => async (dispatch) => {
 
 //INITIAL STATE
 const initialState = {
-  form: {},
-  legislators: [],
-  legislatorsByAddress: [],
+  response: { form: {}, legislators: [], legislatorsByAddress: [] },
+  sendingInfo: {},
 };
 
 //REDUCER
 export default function (state = initialState, action) {
   switch (action.type) {
     case FETCH_SENATORS:
-      return { ...state, ...action.fetchedSenators };
+      return {
+        ...state,
+        response: { ...state.response, ...action.fetchedSenators },
+      };
     case FETCH_INFO:
-      return { ...state, ...action.fetchedInfo };
+      return {
+        ...state,
+        response: { ...state.response, ...action.fetchedInfo },
+      };
     case ADD_INFO:
-      return { ...state, form: { ...state.form, ...action.passedInfo } };
+      return {
+        ...state,
+        sendingInfo: { ...state.sendingInfo, ...action.passedInfo },
+      };
     default:
       return state;
   }
