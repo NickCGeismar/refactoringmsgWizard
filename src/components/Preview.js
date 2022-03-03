@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 
-function Preview(props) {
+function Preview({ msgWizard }) {
+  // console.log(msgWizard);
+  const [displayedSenators, setDisplayedSenators] = useState([]);
+  useEffect(() => {
+    // if (msgWizard.legislatorsByAddress[0]) {
+    // }
+  }, [msgWizard]);
+
   return <p>preview section</p>;
 }
 
