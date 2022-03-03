@@ -1,63 +1,43 @@
 import Modal from "react-modal";
 import React, { useEffect, useState } from "react";
-import { addInfo } from "../redux/msgWizard.js";
+import { addInfo, lookupSenators } from "../redux/msgWizard.js";
 import { connect } from "react-redux";
 
 //This can incorporate redux functionality instead of having 2 states (removing actualInfoAddress)
 //once redux is setup it would prefill from the backend logged in user, two states are no longer necessary.
 //Leaving it in now to create dumby component
 
-function Sender({ msgWizard, addTheSender }) {
-  //States/////////////////////////////////////////////////////////////////////////////////////////////////
+function Sender({ msgWizard, addTheSender, lookupTheSenators }) {
+  //States/useEffect Hooks////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
   const [modalObj, setModalObj] = useState({
     modalBool: false,
     modalType: "address",
   });
-  const [formInfoAddress, setFormInfoAddress] = useState({
-    address1: "185 Leonard St",
-    address2: "3B",
-    city: "New York City",
-    state: "NY",
-    zip: "10025",
-  });
 
-  const [formInfoPerson, setFormInfoPerson] = useState({
-    salutation: "Mr.",
-    firstname: "Billy",
-    lastname: "Bobby",
-    email: "foo@bar.com",
-    phone: "(555) 555-5555",
-  });
+  const [formInfo, setFormInfo] = useState({});
 
+  useEffect(() => {
+    setFormInfo({ ...msgWizard });
+  }, [msgWizard]);
   //etc???///// Modal throw an error if I do not use this
   Modal.setAppElement("body");
 
   //Onclick/onSubmit/function functions////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
-  const handleAddressSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    addTheSender({ ...formInfoAddress });
+    addTheSender({ ...formInfo });
     setModalObj({ modalBool: false });
+    if (event.target.id === "save-address") {
+      lookupTheSenators({ ...formInfo });
+    }
   };
 
-  const handlePersonSubmit = (event) => {
+  const onChange = (event) => {
     event.preventDefault();
-    addTheSender({ ...formInfoPerson });
-    setModalObj({ modalBool: false });
-  };
-
-  const onChangeAddress = (event) => {
-    event.preventDefault();
-    setFormInfoAddress({
-      ...formInfoAddress,
-      [event.target.name]: event.target.value,
-    });
-  };
-  const onChangePerson = (event) => {
-    event.preventDefault();
-    setFormInfoPerson({
-      ...formInfoPerson,
+    setFormInfo({
+      ...formInfo,
       [event.target.name]: event.target.value,
     });
   };
@@ -85,15 +65,16 @@ function Sender({ msgWizard, addTheSender }) {
           isOpen={modalObj.modalBool && modalObj.modalType === "address"}
           onRequestClose={() => setModalObj(false)}
         >
-          <form value="address" onSubmit={handleAddressSubmit}>
+          <form value="address" onSubmit={handleSubmit}>
             <label>
               Address:
               <br />
               <input
+                className="form-control"
                 type="text"
                 name="address1"
-                onChange={onChangeAddress}
-                value={formInfoAddress.address1}
+                onChange={onChange}
+                value={formInfo.address1}
                 minLength="1"
               />
               <br />
@@ -102,10 +83,11 @@ function Sender({ msgWizard, addTheSender }) {
               Apartment/Suite:
               <br />
               <input
+                className="form-control"
                 type="text"
                 name="address2"
-                onChange={onChangeAddress}
-                value={formInfoAddress.address2}
+                onChange={onChange}
+                value={formInfo.address2}
                 minLength="1"
               />
               <br />
@@ -114,20 +96,22 @@ function Sender({ msgWizard, addTheSender }) {
               City:
               <br />
               <input
+                className="form-control"
                 type="text"
                 name="city"
-                onChange={onChangeAddress}
-                value={formInfoAddress.city}
+                onChange={onChange}
+                value={formInfo.city}
               />
               <br />
             </label>
             <label>
               State: <br />
               <select
+                className="form-control"
                 name="state"
                 required=""
-                onChange={onChangeAddress}
-                value={formInfoAddress.state}
+                onChange={onChange}
+                value={formInfo.state}
               >
                 <option value=""></option>
                 <option value="AL">Alabama</option>
@@ -193,15 +177,16 @@ function Sender({ msgWizard, addTheSender }) {
               Zip Code:
               <br />
               <input
+                className="form-control"
                 type="text"
                 name="zip"
-                onChange={onChangeAddress}
-                value={formInfoAddress.zip}
+                onChange={onChange}
+                value={formInfo.zip}
               />
               <br />
             </label>
             <input
-              onClick={handleAddressSubmit}
+              onClick={handleSubmit}
               type="submit"
               id="save-address"
               value="Continue"
@@ -229,13 +214,13 @@ function Sender({ msgWizard, addTheSender }) {
           isOpen={modalObj.modalBool && modalObj.modalType === "sender"}
           onRequestClose={() => setModalObj(false)}
         >
-          <form value="person" onSubmit={handlePersonSubmit}>
+          <form value="person" onSubmit={handleSubmit}>
             <label>
               Salutation:
               <br />
               <input
-                value={formInfoPerson.salutation}
-                onChange={onChangePerson}
+                value={formInfo.salutation}
+                onChange={onChange}
                 type="text"
                 name="salutation"
               />
@@ -245,8 +230,8 @@ function Sender({ msgWizard, addTheSender }) {
               First Name:
               <br />
               <input
-                value={formInfoPerson.firstname}
-                onChange={onChangePerson}
+                value={formInfo.firstname}
+                onChange={onChange}
                 type="text"
                 name="firstname"
               />
@@ -256,8 +241,8 @@ function Sender({ msgWizard, addTheSender }) {
               Last Name:
               <br />
               <input
-                value={formInfoPerson.lastname}
-                onChange={onChangePerson}
+                value={formInfo.lastname}
+                onChange={onChange}
                 type="text"
                 name="lastname"
               />
@@ -267,8 +252,8 @@ function Sender({ msgWizard, addTheSender }) {
               Email:
               <br />
               <input
-                value={formInfoPerson.email}
-                onChange={onChangePerson}
+                value={formInfo.email}
+                onChange={onChange}
                 type="text"
                 name="email"
               />
@@ -278,15 +263,15 @@ function Sender({ msgWizard, addTheSender }) {
               Phone Number:
               <br />
               <input
-                value={formInfoPerson.phone}
-                onChange={onChangePerson}
+                value={formInfo.phone}
+                onChange={onChange}
                 type="text"
                 name="phone"
               />
               <br />
             </label>
             <input
-              onClick={handlePersonSubmit}
+              onClick={handleSubmit}
               id="save-person"
               type="submit"
               value="Continue"
@@ -299,11 +284,12 @@ function Sender({ msgWizard, addTheSender }) {
 }
 
 const mapState = (state) => ({
-  msgWizard: state.msgWizard,
+  msgWizard: state.msgWizard.form,
 });
 
 const mapDispatch = (dispatch) => ({
   addTheSender: (senderInfo) => dispatch(addInfo(senderInfo)),
+  lookupTheSenators: (senderInfo) => dispatch(lookupSenators(senderInfo)),
 });
 
 export default connect(mapState, mapDispatch)(Sender);

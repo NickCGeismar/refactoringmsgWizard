@@ -5,21 +5,23 @@ import Modal from "react-modal";
 import { Button } from "react-bootstrap";
 import { ChatDots } from "react-bootstrap-icons";
 
-function Compose({ addTheCompose }) {
+function Compose({ addTheCompose, msgWizard }) {
   const [modalBool, setModalBool] = useState(false);
   const [checkObject, setCheckObject] = useState([]);
-  const [msgWizard, setMsgWizard] = useState({
+  const [msgWizardCompose, setMsgWizardCompose] = useState({
     subject: "",
     message: "",
   });
 
+  useEffect(() => {}, [msgWizard]);
+
   useEffect(() => {
     const storeObject = {
       recipients: checkObject,
-      ...msgWizard,
+      ...msgWizardCompose,
     };
     addTheCompose(storeObject);
-  }, [checkObject, msgWizard]);
+  }, [checkObject, msgWizardCompose]);
 
   const handleToggleRecipients = (event) => {
     let index;
@@ -59,18 +61,18 @@ function Compose({ addTheCompose }) {
   const handleChange = (event) => {
     event.preventDefault();
     if (event.target.name === "msg-subject") {
-      setMsgWizard({ ...msgWizard, subject: event.target.value });
+      setMsgWizardCompose({ ...msgWizardCompose, subject: event.target.value });
     }
     if (event.target.name === "msg-message") {
-      setMsgWizard({ ...msgWizard, message: event.target.value });
+      setMsgWizardCompose({ ...msgWizardCompose, message: event.target.value });
     }
   };
 
   const addToMessage = (event) => {
     event.preventDefault();
-    setMsgWizard({
-      ...msgWizard,
-      message: msgWizard.message + event.target.innerHTML,
+    setMsgWizardCompose({
+      ...msgWizardCompose,
+      message: msgWizardCompose.message + event.target.innerHTML,
     });
     setModalBool(false);
   };
@@ -94,6 +96,7 @@ function Compose({ addTheCompose }) {
           type="checkbox"
           name="president"
           value="president"
+          checked={false}
         />
         President
       </div>
@@ -127,7 +130,7 @@ function Compose({ addTheCompose }) {
             <input
               className="form-control form-control-lg"
               onChange={handleChange}
-              value={msgWizard.subject}
+              value={msgWizardCompose.subject}
               type="text"
               name="msg-subject"
             />
@@ -201,7 +204,7 @@ function Compose({ addTheCompose }) {
         >
           <label>
             <textarea
-              value={msgWizard.message}
+              value={msgWizardCompose.message}
               onChange={handleChange}
               type="text"
               className="form-control"
