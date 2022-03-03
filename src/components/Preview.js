@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 
 function Preview({ msgWizard }) {
-  // console.log(msgWizard);
+  console.log(msgWizard);
   const [displayedSenators, setDisplayedSenators] = useState([]);
   useEffect(() => {
     // if (msgWizard.legislatorsByAddress[0]) {

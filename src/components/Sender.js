@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 //once redux is setup it would prefill from the backend logged in user, two states are no longer necessary.
 //Leaving it in now to create dumby component
 
-function Sender({ msgWizard, addTheSender, lookupTheSenators }) {
+function Sender({ msgWizardResponse, addTheSender, lookupTheSenators }) {
   //States/useEffect Hooks////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
   const [modalObj, setModalObj] = useState({
@@ -18,8 +18,8 @@ function Sender({ msgWizard, addTheSender, lookupTheSenators }) {
   const [formInfo, setFormInfo] = useState({});
 
   useEffect(() => {
-    setFormInfo({ ...msgWizard });
-  }, [msgWizard]);
+    setFormInfo({ ...msgWizardResponse });
+  }, [msgWizardResponse]);
   //etc???///// Modal throw an error if I do not use this
   Modal.setAppElement("body");
 
@@ -49,9 +49,10 @@ function Sender({ msgWizard, addTheSender, lookupTheSenators }) {
       <div>
         <h1>Address:</h1>
         <address>
-          {msgWizard.address1} {msgWizard.address2}
+          {msgWizardResponse.address1} {msgWizardResponse.address2}
           <br />
-          {msgWizard.city}, {msgWizard.state} {msgWizard.zip}
+          {msgWizardResponse.city}, {msgWizardResponse.state}{" "}
+          {msgWizardResponse.zip}
         </address>
         <button
           type="button"
@@ -197,11 +198,11 @@ function Sender({ msgWizard, addTheSender, lookupTheSenators }) {
       <div>
         <h1>Sender:</h1>
         <address>
-          {msgWizard.salutation} {msgWizard.firstname} {msgWizard.lastname},{" "}
+          {msgWizardResponse.salutation} {msgWizardResponse.firstname}{" "}
+          {msgWizardResponse.lastname}, <br />
+          {msgWizardResponse.email}
           <br />
-          {msgWizard.email}
-          <br />
-          {msgWizard.phone}
+          {msgWizardResponse.phone}
         </address>
         <button
           type="button"
@@ -284,7 +285,7 @@ function Sender({ msgWizard, addTheSender, lookupTheSenators }) {
 }
 
 const mapState = (state) => ({
-  msgWizard: state.msgWizard.form,
+  msgWizardResponse: state.msgWizard.response.form,
 });
 
 const mapDispatch = (dispatch) => ({
