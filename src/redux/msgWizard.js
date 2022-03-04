@@ -33,8 +33,6 @@ export const prefillActionAlert =
         },
       });
       const data = await response.json();
-      const senatorInfo = data.legislators.map((info) => info.full_name);
-      // console.log(senatorInfo);
       dispatch(fetchedInfo(data));
     } catch (error) {
       console.log(error);
@@ -52,7 +50,9 @@ export const lookupSenators = (senderInfo) => async (dispatch) => {
       },
     });
     const data = await response.json();
-    dispatch(fetchedsenator({ legislatorsByAddress: data.legislators }));
+    dispatch(
+      fetchedsenator({ legislatorsByAddress: data.legislators, senderInfo })
+    );
   } catch (error) {}
 };
 
@@ -68,11 +68,16 @@ export default function (state = initialState, action) {
     case FETCH_SENATORS:
       return {
         ...state,
-        response: { ...state.response, ...action.fetchedSenators },
+        sendingInfo: { ...state.sendingInfo, ...action.senderInfo },
+        response: {
+          ...state.response,
+          legislatorsByAddress: action.fetchedSenators.legislatorsByAddress,
+        },
       };
     case FETCH_INFO:
       return {
         ...state,
+        sendingInfo: { ...state.senderInfo, ...action.fetchedInfo.form },
         response: { ...state.response, ...action.fetchedInfo },
       };
     case ADD_INFO:
