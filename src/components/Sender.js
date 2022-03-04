@@ -7,7 +7,12 @@ import { connect } from "react-redux";
 //once redux is setup it would prefill from the backend logged in user, two states are no longer necessary.
 //Leaving it in now to create dumby component
 
-function Sender({ msgWizardResponse, addTheSender, lookupTheSenators }) {
+function Sender({
+  msgWizardSenderInfo,
+  msgWizardResponse,
+  addTheSender,
+  lookupTheSenators,
+}) {
   //States/useEffect Hooks////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
   const [modalObj, setModalObj] = useState({
@@ -18,8 +23,8 @@ function Sender({ msgWizardResponse, addTheSender, lookupTheSenators }) {
   const [formInfo, setFormInfo] = useState({});
 
   useEffect(() => {
-    setFormInfo({ ...msgWizardResponse });
-  }, [msgWizardResponse]);
+    setFormInfo({ ...msgWizardSenderInfo });
+  }, [msgWizardResponse, msgWizardSenderInfo]);
   //etc???///// Modal throw an error if I do not use this
   Modal.setAppElement("body");
 
@@ -49,10 +54,10 @@ function Sender({ msgWizardResponse, addTheSender, lookupTheSenators }) {
       <div>
         <h1>Address:</h1>
         <address>
-          {msgWizardResponse.address1} {msgWizardResponse.address2}
+          {msgWizardSenderInfo.address1} {msgWizardSenderInfo.address2}
           <br />
-          {msgWizardResponse.city}, {msgWizardResponse.state}{" "}
-          {msgWizardResponse.zip}
+          {msgWizardSenderInfo.city}, {msgWizardSenderInfo.state}{" "}
+          {msgWizardSenderInfo.zip}
         </address>
         <button
           type="button"
@@ -198,11 +203,11 @@ function Sender({ msgWizardResponse, addTheSender, lookupTheSenators }) {
       <div>
         <h1>Sender:</h1>
         <address>
-          {msgWizardResponse.salutation} {msgWizardResponse.firstname}{" "}
-          {msgWizardResponse.lastname}, <br />
-          {msgWizardResponse.email}
+          {msgWizardSenderInfo.salutation} {msgWizardSenderInfo.firstname}{" "}
+          {msgWizardSenderInfo.lastname}, <br />
+          {msgWizardSenderInfo.email}
           <br />
-          {msgWizardResponse.phone}
+          {msgWizardSenderInfo.phone}
         </address>
         <button
           type="button"
@@ -286,6 +291,7 @@ function Sender({ msgWizardResponse, addTheSender, lookupTheSenators }) {
 
 const mapState = (state) => ({
   msgWizardResponse: state.msgWizard.response.form,
+  msgWizardSenderInfo: state.msgWizard.sendingInfo,
 });
 
 const mapDispatch = (dispatch) => ({
