@@ -49,8 +49,8 @@ function Sender({
 
   return (
     <div>
-      "Please confirm that the information below is correct. Click the 'Edit'
-      button to change the info."
+      Please confirm that the information below is correct. Click the 'Edit'
+      button to change the info.
       <div>
         <h1>Address:</h1>
         <address>

@@ -20,7 +20,7 @@ function App({ prefillAlert, msgWizard }) {
   }, []);
 
   const [currentComponent, setCurrentComponent] = useState("compose");
-
+  const [hasError, setHasError] = useState(false);
   const handleClickNext = (event) => {
     event.preventDefault();
     if (currentComponent === "compose") {
@@ -59,7 +59,7 @@ function App({ prefillAlert, msgWizard }) {
                 </span>
               }
             >
-              <Compose />
+              <Compose hasError={hasError} setHasError={setHasError} />
             </Tab>
             <Tab
               title={
@@ -124,6 +124,7 @@ function App({ prefillAlert, msgWizard }) {
               }
               id="next"
               onClick={currentComponent !== "preview" ? handleClickNext : null}
+              disabled={hasError ? false : true}
             >
               {currentComponent === "preview" ? "Send All" : "Next"}
               <ArrowRightCircle className="ml-4" />

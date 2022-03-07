@@ -5,7 +5,7 @@ import Modal from "react-modal";
 import { Button } from "react-bootstrap";
 import { ChatDots } from "react-bootstrap-icons";
 
-function Compose({ addTheCompose, msgWizardResponse }) {
+function Compose({ addTheCompose, msgWizardResponse, hasError, setHasError }) {
   const [modalBool, setModalBool] = useState(false);
   const [checkObjectPresident, setCheckObjectPresident] = useState(true);
   const [showCheckObjectPresident, setShowCheckObjectPresident] =
@@ -64,7 +64,7 @@ function Compose({ addTheCompose, msgWizardResponse }) {
     setCheckObjectRepresentative(!checkObjectRepresentative);
   };
 
-  const handleChange = (event) => {
+  const handleInputChange = (event) => {
     event.preventDefault();
     if (event.target.name === "msg-subject") {
       setMsgWizardCompose({ ...msgWizardCompose, subject: event.target.value });
@@ -137,7 +137,7 @@ function Compose({ addTheCompose, msgWizardResponse }) {
           <label>
             <input
               className="form-control form-control-lg"
-              onChange={handleChange}
+              onChange={handleInputChange}
               value={msgWizardCompose.subject}
               type="text"
               name="msg-subject"
@@ -213,7 +213,7 @@ function Compose({ addTheCompose, msgWizardResponse }) {
           <label>
             <textarea
               value={msgWizardCompose.message}
-              onChange={handleChange}
+              onChange={handleInputChange}
               type="text"
               className="form-control"
               name="msg-message"
