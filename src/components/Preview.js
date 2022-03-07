@@ -4,10 +4,12 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { Tabs, Tab } from "react-bootstrap";
 
 function Preview({ msgWizardResponse, msgWizardSendingInfo }) {
-  // console.log(msgWizardResponse);
-  // console.log(msgWizardSendingInfo);
+  // console.log(msgWizardResponse, "response");
+  // console.log(msgWizardSendingInfo, "sending");
   const [displayedSenators, setDisplayedSenators] = useState([]);
   const [currentComponent, setCurrentComponent] = useState("");
+  // const [sendBoolean, setSendBoolean] = useState({});
+
   useEffect(() => {
     let senatorDisplay;
     if (
@@ -29,7 +31,11 @@ function Preview({ msgWizardResponse, msgWizardSendingInfo }) {
       senatorDisplay = msgWizardResponse.legislators.filter((legislatorObj) => {
         let comparison;
         comparison = legislatorObj.title.slice(0, 3).toLowerCase();
-        return !!msgWizardSendingInfo.recipients.includes(comparison);
+        return (
+          !!msgWizardSendingInfo.recipients.includes(comparison) ||
+          (legislatorObj.title.toLowerCase() === "president" &&
+            msgWizardSendingInfo.recipients.includes("president"))
+        );
       });
     }
     setDisplayedSenators(senatorDisplay);
@@ -66,7 +72,7 @@ function Preview({ msgWizardResponse, msgWizardSendingInfo }) {
             style={{ borderRadius: "50%" }}
           >
             <p>
-              The honorable {senator.firstname} {senator.lastname}
+              The Honorable {senator.firstname} {senator.lastname}
             </p>
             <address>
               {senator.addresses[0].address1} {senator.addresses[0].address2}{" "}

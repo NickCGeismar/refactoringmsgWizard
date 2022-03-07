@@ -50,10 +50,17 @@ export const lookupSenators = (senderInfo) => async (dispatch) => {
       },
     });
     const data = await response.json();
-    dispatch(
-      fetchedsenator({ legislatorsByAddress: data.legislators, senderInfo })
-    );
-  } catch (error) {}
+    if (response.status === 404) {
+      throw Error("Legislators not found.");
+    }
+    if (data.legislators) {
+      dispatch(
+        fetchedsenator({ legislatorsByAddress: data.legislators, senderInfo })
+      );
+    }
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 //INITIAL STATE
