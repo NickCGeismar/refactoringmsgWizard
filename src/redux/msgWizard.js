@@ -1,11 +1,19 @@
 //ACTION TYPES
 const ADD_INFO = "ADD_INFO";
-const FETCH_INFO = "FETCH_INFO";
+const FETCH_INFO_RESPONSE = "FETCH_INFO_RESPONSE";
+const FETCH_INFO_ACTION_ALERT = "FETCH_INFO_ACTION_ALERT";
 const FETCH_SENATORS = "FETCH_SENATORS";
 
 //ACTION CREATORS
 const addedInfo = (passedInfo) => ({ type: ADD_INFO, passedInfo });
-const fetchedInfo = (fetchedInfo) => ({ type: FETCH_INFO, fetchedInfo });
+const fetchedInfoResponse = (fetchedInfo) => ({
+  type: FETCH_INFO_RESPONSE,
+  fetchedInfo,
+});
+const fetchedInfoActionAlert = (fetchedInfo) => ({
+  type: FETCH_INFO_ACTION_ALERT,
+  fetchedInfo,
+});
 const fetchedsenator = (fetchedSenators) => ({
   type: FETCH_SENATORS,
   fetchedSenators,
@@ -24,16 +32,30 @@ export const prefillActionAlert =
   (actionId = 1930) =>
   async (dispatch) => {
     try {
-      const url = `https://nwyc.dev.cvoice.io/v4/action_alerts/${actionId}/response`;
-      const response = await fetch(url, {
-        method: "GET",
-        // withCredentials: true,
-        headers: {
-          Authorization: "Bearer 9gncKxP1Qmr54Clh3budNXaEjiUdgpzX3Cq1JAijgj",
-        },
-      });
-      const data = await response.json();
-      dispatch(fetchedInfo(data));
+      const actionAlert = await fetch(
+        `https://nwyc.dev.cvoice.io/v4/action_alerts/${actionId}`,
+        {
+          method: "GET",
+          // withCredentials: true,
+          headers: {
+            Authorization: "Bearer 9gncKxP1Qmr54Clh3budNXaEjiUdgpzX3Cq1JAijgj",
+          },
+        }
+      );
+      const actionResponse = await fetch(
+        `https://nwyc.dev.cvoice.io/v4/action_alerts/${actionId}/response`,
+        {
+          method: "GET",
+          // withCredentials: true,
+          headers: {
+            Authorization: "Bearer 9gncKxP1Qmr54Clh3budNXaEjiUdgpzX3Cq1JAijgj",
+          },
+        }
+      );
+      const dataAlert = await actionAlert.json();
+      const dataResponse = await actionResponse.json();
+      dispatch(fetchedInfoResponse(dataResponse));
+      dispatch(fetchedInfoActionAlert(dataAlert));
     } catch (error) {
       console.log(error);
     }
@@ -54,6 +76,7 @@ export const lookupSenators = (senderInfo) => async (dispatch) => {
       throw Error("Legislators not found.");
     }
     if (data.legislators) {
+      console.log(data);
       dispatch(
         fetchedsenator({ legislatorsByAddress: data.legislators, senderInfo })
       );
@@ -81,10 +104,15 @@ export default function (state = initialState, action) {
           legislatorsByAddress: action.fetchedSenators.legislatorsByAddress,
         },
       };
-    case FETCH_INFO:
+    case FETCH_INFO_RESPONSE:
       return {
         ...state,
         sendingInfo: { ...state.senderInfo, ...action.fetchedInfo.form },
+        response: { ...state.response, ...action.fetchedInfo },
+      };
+    case FETCH_INFO_ACTION_ALERT:
+      return {
+        ...state,
         response: { ...state.response, ...action.fetchedInfo },
       };
     case ADD_INFO:
