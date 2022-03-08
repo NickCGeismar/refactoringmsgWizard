@@ -4,27 +4,76 @@ import { addInfo } from "../redux/msgWizard.js";
 import Modal from "react-modal";
 import { Button } from "react-bootstrap";
 import { ChatDots } from "react-bootstrap-icons";
+import { useForm } from "react-hook-form";
 
 function Compose({ addTheCompose, msgWizardResponse, hasError, setHasError }) {
   const [modalBool, setModalBool] = useState(false);
-  const [checkObjectPresident, setCheckObjectPresident] = useState(true);
-  const [showCheckObjectPresident, setShowCheckObjectPresident] =
-    useState(true);
-  const [checkObjectSenator, setCheckObjectSenator] = useState(true);
-  const [showCheckObjectSenator, setShowCheckObjectSenator] = useState(true);
+  const [checkObjectPresident, setCheckObjectPresident] = useState(false);
+  const [checkObjectVicePresident, setCheckObjectVicePresident] =
+    useState(false);
+  const [checkObjectSenator, setCheckObjectSenator] = useState(false);
   const [checkObjectRepresentative, setCheckObjectRepresentative] =
-    useState(true);
-  const [showCheckObjectRepresentative, setShowCheckObjectRepresentative] =
-    useState(true);
+    useState(false);
+  const [checkObjectGovernor, setCheckObjectGovernor] = useState(false);
+  const [checkObjectStateSen, setCheckObjectStateSen] = useState(false);
+  const [checkObjectStateRep, setCheckObjectStateRep] = useState(false);
+
   const [msgWizardCompose, setMsgWizardCompose] = useState({
     subject: "",
     message: "",
   });
+  const [showCheckObjectPresident, setShowCheckObjectPresident] =
+    useState(false);
+  const [showCheckObjectSenator, setShowCheckObjectSenator] = useState(false);
+  const [showCheckObjectRepresentative, setShowCheckObjectRepresentative] =
+    useState(false);
+  const [showCheckObjectVicePresident, setShowCheckObjectVicePresident] =
+    useState(false);
+  const [showCheckObjectStateSen, setShowCheckObjectStateSen] = useState(false);
+  const [showCheckObjectStateRep, setShowCheckObjectStateRep] = useState(false);
+  const [showCheckObjectGovernor, setShowCheckObjectGovernor] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   //predetermines boolean checkObject states from action_alert response
   useEffect(() => {
-    // console.log(msgWizardResponse.form.recipients);
-  }, [msgWizardResponse.form.recipients]);
+    if (msgWizardResponse.action_alert) {
+      msgWizardResponse.action_alert.chambers.forEach((element) => {
+        if (element === "president") {
+          setShowCheckObjectPresident(true);
+          setCheckObjectPresident(true);
+        }
+        if (element === "sen") {
+          setShowCheckObjectSenator(true);
+          setCheckObjectSenator(true);
+        }
+        if (element === "rep") {
+          setShowCheckObjectRepresentative(true);
+          setCheckObjectRepresentative(true);
+        }
+        if (element === "vice-president") {
+          setShowCheckObjectVicePresident(true);
+          setCheckObjectVicePresident(true);
+        }
+        if (element === "governor") {
+          setShowCheckObjectGovernor(true);
+          setCheckObjectGovernor(true);
+        }
+        if (element === "state-sen") {
+          setShowCheckObjectStateSen(true);
+          setCheckObjectStateSen(true);
+        }
+        if (element === "state-rep") {
+          setShowCheckObjectStateRep(true);
+          setCheckObjectStateRep(true);
+        }
+      });
+    }
+  }, [msgWizardResponse.action_alert]);
 
   //sends recipients to store
   useEffect(() => {
@@ -32,37 +81,45 @@ function Compose({ addTheCompose, msgWizardResponse, hasError, setHasError }) {
     if (checkObjectPresident) {
       checkObjectRecipients.push("president");
     }
+    if (checkObjectVicePresident) {
+      checkObjectRecipients.push("vice-president");
+    }
     if (checkObjectSenator) {
       checkObjectRecipients.push("sen");
     }
     if (checkObjectRepresentative) {
       checkObjectRecipients.push("rep");
     }
+    if (checkObjectGovernor) {
+      checkObjectRecipients.push("governor");
+    }
+    if (checkObjectStateSen) {
+      checkObjectRecipients.push("state-sen");
+    }
+    if (checkObjectStateRep) {
+      checkObjectRecipients.push("state-rep");
+    }
     const storeObject = {
       recipients: checkObjectRecipients,
     };
     addTheCompose(storeObject);
-  }, [checkObjectPresident, checkObjectSenator, checkObjectRepresentative]);
+  }, [
+    checkObjectPresident,
+    checkObjectSenator,
+    checkObjectRepresentative,
+    checkObjectVicePresident,
+    checkObjectGovernor,
+    checkObjectStateSen,
+    checkObjectStateRep,
+  ]);
 
-  //sends composedmessages to store
+  //sends composed messages to store
   useEffect(() => {
     const storeObject = {
       ...msgWizardCompose,
     };
     addTheCompose(storeObject);
   }, [msgWizardCompose]);
-
-  const handleTogglePresident = (event) => {
-    setCheckObjectPresident(!checkObjectPresident);
-  };
-
-  const handleToggleSenator = (event) => {
-    setCheckObjectSenator(!checkObjectSenator);
-  };
-
-  const handleToggleRepresentative = (event) => {
-    setCheckObjectRepresentative(!checkObjectRepresentative);
-  };
 
   const handleInputChange = (event) => {
     event.preventDefault();
@@ -96,36 +153,94 @@ function Compose({ addTheCompose, msgWizardResponse, hasError, setHasError }) {
         on the issue to your elected officials.
       </p>
       <h3>Message Recipients*</h3>
-      <div>
-        <input
-          onChange={handleTogglePresident}
-          type="checkbox"
-          name="president"
-          value="president"
-          checked={checkObjectPresident}
-        />
-        President
-      </div>
-      <div>
-        <input
-          onChange={handleToggleSenator}
-          type="checkbox"
-          name="senator"
-          value="senator"
-          checked={checkObjectSenator}
-        />
-        Your U.S senators
-      </div>
-      <div>
-        <input
-          onChange={handleToggleRepresentative}
-          type="checkbox"
-          name="representative"
-          value="representative"
-          checked={checkObjectRepresentative}
-        />
-        Your U.S representatives
-      </div>
+      {showCheckObjectPresident ? (
+        <div>
+          <input
+            onChange={() => setCheckObjectPresident(!checkObjectPresident)}
+            type="checkbox"
+            name="president"
+            value="president"
+            checked={checkObjectPresident}
+          />
+          President
+        </div>
+      ) : null}
+      {showCheckObjectVicePresident ? (
+        <div>
+          <input
+            onChange={() =>
+              setCheckObjectVicePresident(!checkObjectVicePresident)
+            }
+            type="checkbox"
+            name="senator"
+            value="senator"
+            checked={showCheckObjectVicePresident}
+          />
+          Your Vice President
+        </div>
+      ) : null}
+      {showCheckObjectSenator ? (
+        <div>
+          <input
+            onChange={() => setCheckObjectSenator(!checkObjectSenator)}
+            type="checkbox"
+            name="senator"
+            value="senator"
+            checked={checkObjectSenator}
+          />
+          Your U.S senators
+        </div>
+      ) : null}
+      {showCheckObjectRepresentative ? (
+        <div>
+          <input
+            onChange={() =>
+              setCheckObjectRepresentative(!checkObjectRepresentative)
+            }
+            type="checkbox"
+            name="representative"
+            value="representative"
+            checked={checkObjectRepresentative}
+          />
+          Your U.S representatives
+        </div>
+      ) : null}
+      {showCheckObjectGovernor ? (
+        <div>
+          <input
+            onChange={() => setCheckObjectGovernor(!checkObjectGovernor)}
+            type="checkbox"
+            name="representative"
+            value="representative"
+            checked={checkObjectGovernor}
+          />
+          Your State Governor
+        </div>
+      ) : null}
+      {showCheckObjectStateSen ? (
+        <div>
+          <input
+            onChange={() => setCheckObjectStateSen(!checkObjectStateSen)}
+            type="checkbox"
+            name="representative"
+            value="representative"
+            checked={checkObjectStateSen}
+          />
+          Your State Senator
+        </div>
+      ) : null}
+      {showCheckObjectStateRep ? (
+        <div>
+          <input
+            onChange={() => setCheckObjectStateRep(!checkObjectStateRep)}
+            type="checkbox"
+            name="representative"
+            value="representative"
+            checked={checkObjectStateRep}
+          />
+          Your State representatives
+        </div>
+      ) : null}
       <div>
         <h3>Subject*</h3>
         <form
@@ -158,51 +273,21 @@ function Compose({ addTheCompose, msgWizardResponse, hasError, setHasError }) {
           <p>Talking Points</p>
         </Button>
         <Modal isOpen={modalBool} onRequestClose={() => setModalBool(false)}>
-          <Button
-            variant="light"
-            className="form-control"
-            onClick={addToMessage}
-          >
-            I think Congress should pass the [insert bill].{" "}
-          </Button>
-          <Button
-            variant="light"
-            className="form-control"
-            onClick={addToMessage}
-          >
-            I do not think Congress should pass the [insert bill].{" "}
-          </Button>
-          <Button
-            variant="light"
-            className="form-control"
-            onClick={addToMessage}
-          >
-            As a business owner, this legislation will affect me in the
-            following ways.{" "}
-          </Button>
-          <Button
-            variant="light"
-            className="form-control"
-            onClick={addToMessage}
-          >
-            As a concerned citizen, this legislation will affect me in the
-            following ways.{" "}
-          </Button>
-          <Button
-            variant="light"
-            className="form-control"
-            onClick={addToMessage}
-          >
-            I also think{" "}
-          </Button>
-          <Button
-            variant="light"
-            className="form-control"
-            onClick={addToMessage}
-          >
-            As a constituent of yours, I would like to know your thoughts on
-            this issue.{" "}
-          </Button>
+          {msgWizardResponse.action_alert &&
+          Array.isArray(msgWizardResponse.action_alert.talking_points)
+            ? msgWizardResponse.action_alert.talking_points.map(
+                (talkingP, i) => (
+                  <Button
+                    variant="light"
+                    className="form-control"
+                    onClick={addToMessage}
+                    key={i}
+                  >
+                    {talkingP}
+                  </Button>
+                )
+              )
+            : null}
         </Modal>
         <form
           value="message"

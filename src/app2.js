@@ -20,7 +20,7 @@ function App({ prefillAlert, msgWizard }) {
   }, []);
 
   const [currentComponent, setCurrentComponent] = useState("compose");
-  const [hasError, setHasError] = useState(false);
+  const [hasError, setHasError] = useState(true);
   const handleClickNext = (event) => {
     event.preventDefault();
     if (currentComponent === "compose") {
