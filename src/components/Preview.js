@@ -105,12 +105,6 @@ function Preview({ msgWizardResponse, msgWizardSendingInfo, addTheCompose }) {
             }
             style={{ borderRadius: "50%" }}
           >
-            {!!msgWizardSendingInfo.exclude.includes(senator.id) ? (
-              <p>
-                Letter is excluded and will not be sent. Click "Include" to
-                include this representative.
-              </p>
-            ) : null}
             <Button
               id={senator.id}
               variant="outline-danger"
@@ -120,6 +114,12 @@ function Preview({ msgWizardResponse, msgWizardSendingInfo, addTheCompose }) {
                 ? "Include"
                 : "Exclude"}
             </Button>
+            {!!msgWizardSendingInfo.exclude.includes(senator.id) ? (
+              <p>
+                Letter is excluded and will not be sent. Click "Include" to
+                include this representative.
+              </p>
+            ) : null}
             <div
               style={
                 msgWizardSendingInfo.exclude.includes(senator.id)
