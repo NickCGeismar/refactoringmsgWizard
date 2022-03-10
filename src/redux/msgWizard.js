@@ -76,7 +76,6 @@ export const lookupSenators = (senderInfo) => async (dispatch) => {
       throw Error("Legislators not found.");
     }
     if (data.legislators) {
-      console.log(data);
       dispatch(
         fetchedsenator({ legislatorsByAddress: data.legislators, senderInfo })
       );

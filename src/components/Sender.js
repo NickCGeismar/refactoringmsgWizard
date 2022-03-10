@@ -2,6 +2,10 @@ import Modal from "react-modal";
 import React, { useEffect, useState } from "react";
 import { addInfo, lookupSenators } from "../redux/msgWizard.js";
 import { connect } from "react-redux";
+import { Button } from "react-bootstrap";
+import { isValidPhoneNumber } from "libphonenumber-js";
+import { validate as emailValidator } from "email-validator";
+import { notEmptyValidator, zipCodeValidator } from "../validations.js";
 
 //This can incorporate redux functionality instead of having 2 states (removing actualInfoAddress)
 //once redux is setup it would prefill from the backend logged in user, two states are no longer necessary.
@@ -12,6 +16,7 @@ function Sender({
   msgWizardResponse,
   addTheSender,
   lookupTheSenators,
+  senderErrorHandler,
 }) {
   //States/useEffect Hooks////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,19 +24,114 @@ function Sender({
     modalBool: false,
     modalType: "address",
   });
+  const [addressError, setAddressError] = useState("");
+  const [apartmentError, setApartmentError] = useState("");
+  const [cityError, setCityError] = useState("");
+  const [zipError, setZipError] = useState("");
+  const [firstNameError, setFirstNameError] = useState("");
+  const [lastNameError, setLastNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [addressFullError, setAddressFullError] = useState(true);
+  const [personError, setPersonError] = useState(true);
 
   const [formInfo, setFormInfo] = useState({});
 
   useEffect(() => {
     setFormInfo({ ...msgWizardSenderInfo });
-  }, [msgWizardResponse, msgWizardSenderInfo]);
+  }, [msgWizardSenderInfo]);
+  useEffect(() => {
+    senderErrorHandler(addressFullError, personError);
+    // let bool = errorSubjectHandler() && errorMessageHandler();
+    // setHasNoError(bool);
+  }, [personError, addressFullError]);
   //etc???///// Modal throw an error if I do not use this
   Modal.setAppElement("body");
 
   //Onclick/onSubmit/function functions////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
+  const addressErrorChecker = () => {
+    if (!notEmptyValidator(formInfo.address1)) {
+      setAddressError("Please input a Address");
+    }
+    if (notEmptyValidator(formInfo.address1)) {
+      setAddressError("");
+    }
+    if (!notEmptyValidator(formInfo.address2)) {
+      setApartmentError("Please input an Apartment");
+    }
+    if (notEmptyValidator(formInfo.address2)) {
+      setApartmentError("");
+    }
+    if (!notEmptyValidator(formInfo.city)) {
+      setCityError("Please Input a City");
+    }
+    if (notEmptyValidator(formInfo.city)) {
+      setCityError("");
+    }
+    if (!zipCodeValidator(formInfo.zip)) {
+      setZipError("Please input a proper Zipcode");
+    }
+    if (zipCodeValidator(formInfo.zip)) {
+      setZipError("");
+    }
+    if (
+      !notEmptyValidator(formInfo.address1) ||
+      !notEmptyValidator(formInfo.address2) ||
+      !notEmptyValidator(formInfo.city) ||
+      !zipCodeValidator(formInfo.zip)
+    ) {
+      setAddressFullError(false);
+    } else setAddressFullError(true);
+  };
+
+  const personErrorChecker = () => {
+    if (!notEmptyValidator(formInfo.firstname)) {
+      setFirstNameError("Please input your first name");
+    }
+    if (notEmptyValidator(formInfo.firstname)) {
+      setFirstNameError("");
+    }
+    if (!notEmptyValidator(formInfo.lastname)) {
+      setLastNameError("Please input your last name");
+    }
+    if (notEmptyValidator(formInfo.lastname)) {
+      setLastNameError("");
+    }
+    if (!emailValidator(formInfo.email)) {
+      setEmailError("Please input a valid email");
+    }
+    if (emailValidator(formInfo.email)) {
+      setEmailError("");
+    }
+    if (formInfo.phone && !isValidPhoneNumber(formInfo.phone, "US")) {
+      setPhoneError("Please input a valid phone number");
+    }
+    if (formInfo.phone && isValidPhoneNumber(formInfo.phone, "US")) {
+      setPhoneError("");
+    }
+    if (
+      !notEmptyValidator(formInfo.firstname) ||
+      !notEmptyValidator(formInfo.lastname) ||
+      !emailValidator(formInfo.email) ||
+      !isValidPhoneNumber(formInfo.phone, "US")
+    ) {
+      setPersonError(false);
+    } else {
+      setPersonError(true);
+    }
+  };
+  useEffect(() => {
+    personErrorChecker();
+    addressErrorChecker();
+    // let bool = errorSubjectHandler() && errorMessageHandler();
+    // setHasNoError(bool);
+  }, [msgWizardSenderInfo]);
+
   const handleSubmit = (event) => {
     event.preventDefault();
+    // console.log(isValidPhoneNumber(formInfo.phone, "US"), formInfo.phone);
+    // console.log(emailValidator(formInfo.email));
     addTheSender({ ...formInfo });
     setModalObj({ modalBool: false });
     if (event.target.id === "save-address") {
@@ -53,19 +153,41 @@ function Sender({
       button to change the info.
       <div>
         <h1>Address:</h1>
-        <address>
-          {msgWizardSenderInfo.address1} {msgWizardSenderInfo.address2}
-          <br />
-          {msgWizardSenderInfo.city}, {msgWizardSenderInfo.state}{" "}
-          {msgWizardSenderInfo.zip}
-        </address>
-        <button
-          type="button"
-          onClick={() => setModalObj({ modalBool: true, modalType: "address" })}
-          value="modal-button"
-        >
-          <p>Edit</p>
-        </button>
+        {!addressFullError ? (
+          <div>
+            <h3 style={{ color: "red" }}>
+              One or more required fields are missing
+            </h3>
+            <Button
+              className="btn btn-danger"
+              type="button"
+              onClick={() =>
+                setModalObj({ modalBool: true, modalType: "address" })
+              }
+              value="modal-button"
+            >
+              <p>Edit</p>
+            </Button>
+          </div>
+        ) : (
+          <div>
+            <address>
+              {msgWizardSenderInfo.address1} {msgWizardSenderInfo.address2}
+              <br />
+              {msgWizardSenderInfo.city}, {msgWizardSenderInfo.state}{" "}
+              {msgWizardSenderInfo.zip}
+            </address>
+            <Button
+              type="button"
+              onClick={() =>
+                setModalObj({ modalBool: true, modalType: "address" })
+              }
+              value="modal-button"
+            >
+              <p>Edit</p>
+            </Button>{" "}
+          </div>
+        )}
         {/* onExit={reload} Possible way to reset*/}
         <Modal
           isOpen={modalObj.modalBool && modalObj.modalType === "address"}
@@ -83,6 +205,9 @@ function Sender({
                 value={formInfo.address1}
                 minLength="1"
               />
+              {addressError ? (
+                <p style={{ color: "red" }}>{addressError}</p>
+              ) : null}
               <br />
             </label>
             <label>
@@ -96,6 +221,9 @@ function Sender({
                 value={formInfo.address2}
                 minLength="1"
               />
+              {apartmentError ? (
+                <p style={{ color: "red" }}>{apartmentError}</p>
+              ) : null}
               <br />
             </label>
             <label>
@@ -108,6 +236,7 @@ function Sender({
                 onChange={onChange}
                 value={formInfo.city}
               />
+              {cityError ? <p style={{ color: "red" }}>{cityError}</p> : null}
               <br />
             </label>
             <label>
@@ -189,6 +318,7 @@ function Sender({
                 onChange={onChange}
                 value={formInfo.zip}
               />
+              {zipError ? <p style={{ color: "red" }}>{zipError}</p> : null}
               <br />
             </label>
             <input
@@ -202,20 +332,42 @@ function Sender({
       </div>
       <div>
         <h1>Sender:</h1>
-        <address>
-          {msgWizardSenderInfo.salutation} {msgWizardSenderInfo.firstname}{" "}
-          {msgWizardSenderInfo.lastname}, <br />
-          {msgWizardSenderInfo.email}
-          <br />
-          {msgWizardSenderInfo.phone}
-        </address>
-        <button
-          type="button"
-          onClick={() => setModalObj({ modalBool: true, modalType: "sender" })}
-          value="modal-button"
-        >
-          <p>Edit</p>
-        </button>
+        {!personError ? (
+          <div>
+            <h3 style={{ color: "red" }}>
+              One or more required fields are missing
+            </h3>
+            <Button
+              className="btn btn-danger"
+              type="button"
+              onClick={() =>
+                setModalObj({ modalBool: true, modalType: "sender" })
+              }
+              value="modal-button"
+            >
+              <p>Edit</p>
+            </Button>
+          </div>
+        ) : (
+          <div>
+            <address>
+              {msgWizardSenderInfo.salutation} {msgWizardSenderInfo.firstname}{" "}
+              {msgWizardSenderInfo.lastname}, <br />
+              {msgWizardSenderInfo.email}
+              <br />
+              {msgWizardSenderInfo.phone}
+            </address>
+            <Button
+              type="button"
+              onClick={() =>
+                setModalObj({ modalBool: true, modalType: "sender" })
+              }
+              value="modal-button"
+            >
+              <p>Edit</p>
+            </Button>
+          </div>
+        )}
         <Modal
           isOpen={modalObj.modalBool && modalObj.modalType === "sender"}
           onRequestClose={() => setModalObj(false)}
@@ -241,6 +393,9 @@ function Sender({
                 type="text"
                 name="firstname"
               />
+              {firstNameError ? (
+                <p style={{ color: "red" }}>{firstNameError}</p>
+              ) : null}
               <br />
             </label>
             <label>
@@ -252,6 +407,9 @@ function Sender({
                 type="text"
                 name="lastname"
               />
+              {lastNameError ? (
+                <p style={{ color: "red" }}>{lastNameError}</p>
+              ) : null}
               <br />
             </label>
             <label>
@@ -263,6 +421,7 @@ function Sender({
                 type="text"
                 name="email"
               />
+              {emailError ? <p style={{ color: "red" }}>{emailError}</p> : null}
               <br />
             </label>
             <label>
@@ -274,6 +433,7 @@ function Sender({
                 type="text"
                 name="phone"
               />
+              {phoneError ? <p style={{ color: "red" }}>{phoneError}</p> : null}
               <br />
             </label>
             <input
