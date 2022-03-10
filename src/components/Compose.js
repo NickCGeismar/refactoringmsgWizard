@@ -4,9 +4,13 @@ import { addInfo } from "../redux/msgWizard.js";
 import Modal from "react-modal";
 import { Button } from "react-bootstrap";
 import { ChatDots } from "react-bootstrap-icons";
-import { useForm } from "react-hook-form";
 
-function Compose({ addTheCompose, msgWizardResponse, hasError, setHasError }) {
+function Compose({
+  addTheCompose,
+  msgWizardResponse,
+  setHasNoError,
+  composeErrorHandler,
+}) {
   const [modalBool, setModalBool] = useState(false);
   const [checkObjectPresident, setCheckObjectPresident] = useState(false);
   const [checkObjectVicePresident, setCheckObjectVicePresident] =
@@ -22,6 +26,9 @@ function Compose({ addTheCompose, msgWizardResponse, hasError, setHasError }) {
     subject: "",
     message: "",
   });
+  const [msgWizardSubjectErrors, setMsgWizardSubjectErrors] = useState("");
+
+  const [msgWizardMessageErrors, setMsgWizardMessageErrors] = useState("");
   const [showCheckObjectPresident, setShowCheckObjectPresident] =
     useState(false);
   const [showCheckObjectSenator, setShowCheckObjectSenator] = useState(false);
@@ -32,12 +39,6 @@ function Compose({ addTheCompose, msgWizardResponse, hasError, setHasError }) {
   const [showCheckObjectStateSen, setShowCheckObjectStateSen] = useState(false);
   const [showCheckObjectStateRep, setShowCheckObjectStateRep] = useState(false);
   const [showCheckObjectGovernor, setShowCheckObjectGovernor] = useState(false);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
 
   //predetermines boolean checkObject states from action_alert response
   useEffect(() => {
@@ -119,6 +120,29 @@ function Compose({ addTheCompose, msgWizardResponse, hasError, setHasError }) {
       ...msgWizardCompose,
     };
     addTheCompose(storeObject);
+  }, [msgWizardCompose]);
+
+  const errorMessageHandler = () => {
+    if (!msgWizardCompose.message) {
+      setMsgWizardMessageErrors("Please input a message");
+      return false;
+    } else setMsgWizardMessageErrors("");
+    return true;
+  };
+  const errorSubjectHandler = () => {
+    if (!msgWizardCompose.subject) {
+      setMsgWizardSubjectErrors("Please input a message");
+      return false;
+    } else setMsgWizardSubjectErrors("");
+    return true;
+  };
+
+  useEffect(() => {
+    errorMessageHandler();
+    errorSubjectHandler();
+    composeErrorHandler(errorMessageHandler(), errorSubjectHandler());
+    // let bool = errorSubjectHandler() && errorMessageHandler();
+    // setHasNoError(bool);
   }, [msgWizardCompose]);
 
   const handleInputChange = (event) => {
@@ -258,6 +282,7 @@ function Compose({ addTheCompose, msgWizardResponse, hasError, setHasError }) {
               name="msg-subject"
             />
           </label>
+          <p style={{ color: "red" }}>{msgWizardSubjectErrors}</p>
         </form>
       </div>
       <div>
@@ -306,6 +331,7 @@ function Compose({ addTheCompose, msgWizardResponse, hasError, setHasError }) {
               cols="55"
             />
           </label>
+          <p style={{ color: "red" }}>{msgWizardMessageErrors}</p>
         </form>
       </div>
     </div>

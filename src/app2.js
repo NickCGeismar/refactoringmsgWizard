@@ -20,7 +20,9 @@ function App({ prefillAlert, msgWizard }) {
   }, []);
 
   const [currentComponent, setCurrentComponent] = useState("compose");
-  const [hasError, setHasError] = useState(true);
+  const [hasNoComposeError, setHasNoComposeError] = useState(false);
+  const [hasNoSenderError, setHasNoSenderError] = useState(false);
+
   const handleClickNext = (event) => {
     event.preventDefault();
     if (currentComponent === "compose") {
@@ -38,6 +40,18 @@ function App({ prefillAlert, msgWizard }) {
     if (currentComponent === "sender") {
       setCurrentComponent("compose");
     }
+  };
+
+  const composeErrorHandler = (boolOne, boolTwo) => {
+    if (boolOne && boolTwo) {
+      setHasNoComposeError(true);
+    } else setHasNoComposeError(false);
+  };
+
+  const senderErrorHandler = (boolOne, boolTwo) => {
+    if (boolOne && boolTwo) {
+      setHasNoSenderError(true);
+    } else setHasNoSenderError(false);
   };
   return (
     <div className="app">
@@ -59,7 +73,11 @@ function App({ prefillAlert, msgWizard }) {
                 </span>
               }
             >
-              <Compose hasError={hasError} setHasError={setHasError} />
+              <Compose
+                composeErrorHandler={composeErrorHandler}
+                hasNoError={hasNoComposeError}
+                setHasNoError={setHasNoComposeError}
+              />
             </Tab>
             <Tab
               title={
@@ -78,7 +96,7 @@ function App({ prefillAlert, msgWizard }) {
               }
               disabled={currentComponent === "preview" ? false : true}
             >
-              <Sender />
+              <Sender senderErrorHandler={senderErrorHandler} />
             </Tab>
             <Tab
               title={
@@ -102,7 +120,6 @@ function App({ prefillAlert, msgWizard }) {
             </Tab>
           </Tabs>
           <div className="next-button">
-            {/* Add state that handles disable button */}
             {currentComponent === "compose" ? null : (
               <Button
                 variant="outline-primary"
@@ -124,7 +141,12 @@ function App({ prefillAlert, msgWizard }) {
               }
               id="next"
               onClick={currentComponent !== "preview" ? handleClickNext : null}
-              disabled={hasError ? false : true}
+              disabled={
+                (hasNoComposeError && currentComponent === "compose") ||
+                (hasNoSenderError && currentComponent === "sender")
+                  ? false
+                  : true
+              }
             >
               {currentComponent === "preview" ? "Send All" : "Next"}
               <ArrowRightCircle className="ml-4" />
