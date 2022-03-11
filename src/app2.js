@@ -57,106 +57,124 @@ function App({ prefillAlert, msgWizard }) {
     <div className="app">
       <div className="card-container">
         <Card className="bootstrap-card">
-          <Tabs
-            mountOnEnter
-            variant={"pills"}
-            activeKey={currentComponent}
-            id="uncontrolled-tab-example"
-            className="mb-3"
-            onSelect={function (evt) {
-              setCurrentComponent(evt);
-            }}
-          >
-            <Tab
-              eventKey="compose"
-              title={
-                <span>
-                  <Pencil className="mr-3" /> Compose
-                </span>
-              }
+          <Card.Header>
+            <Tabs
+              mountOnEnter
+              variant="pills"
+              activeKey={currentComponent}
+              id="uncontrolled-tab-example"
+              onSelect={function (evt) {
+                setCurrentComponent(evt);
+              }}
             >
-              <Card.Body>
-                <Compose
-                  composeErrorHandler={composeErrorHandler}
-                  hasNoError={hasNoComposeError}
-                  setHasNoError={setHasNoComposeError}
-                />
-              </Card.Body>
-            </Tab>
-            <Tab
-              title={
-                <span>
-                  <ArrowRightCircle />
-                </span>
-              }
-              disabled={currentComponent !== "compose" ? false : true}
-            ></Tab>
-            <Tab
-              eventKey="sender"
-              title={
-                <span>
-                  <PersonFill className="mr-3" /> Sender
-                </span>
-              }
-              disabled={currentComponent === "preview" ? false : true}
-            >
-              <Sender senderErrorHandler={senderErrorHandler} />
-            </Tab>
-            <Tab
-              title={
-                <span>
-                  <ArrowRightCircle />
-                </span>
-              }
-              disabled={currentComponent === "preview" ? false : true}
-            ></Tab>
+              <Tab
+                eventKey="compose"
+                title={
+                  <span>
+                    <Pencil className="mr-3" /> Compose
+                  </span>
+                }
+              >
+                {/* <Card.Body>
+                  <Compose
+                    composeErrorHandler={composeErrorHandler}
+                    hasNoError={hasNoComposeError}
+                    setHasNoError={setHasNoComposeError}
+                  />
+                </Card.Body> */}
+              </Tab>
+              {/* <Tab
+                title={
+                  <span>
+                    <ArrowRightCircle />
+                  </span>
+                }
+                disabled={currentComponent !== "compose" ? false : true}
+              /> */}
+              <Tab
+                eventKey="sender"
+                title={
+                  <span>
+                    <PersonFill className="mr-3" /> Sender
+                  </span>
+                }
+                disabled={currentComponent === "preview" ? false : true}
+              >
+                {/* <Sender senderErrorHandler={senderErrorHandler} /> */}
+              </Tab>
+              {/* <Tab
+                title={
+                  <span>
+                    <ArrowRightCircle />
+                  </span>
+                }
+                disabled={currentComponent === "preview" ? false : true}
+              /> */}
 
-            <Tab
-              eventKey="preview"
-              title={
-                <span>
-                  <FileEarmarkFill className="mr-3" /> Preview
-                </span>
-              }
-              disabled={currentComponent !== "preview" ? true : false}
-            >
+              <Tab
+                eventKey="preview"
+                title={
+                  <span>
+                    <FileEarmarkFill className="mr-3" /> Preview
+                  </span>
+                }
+                disabled={currentComponent !== "preview" ? true : false}
+              >
+                {/* <Preview /> */}
+              </Tab>
+            </Tabs>
+          </Card.Header>
+          <Card.Body>
+            {currentComponent === "compose" ? (
+              <Compose
+                composeErrorHandler={composeErrorHandler}
+                hasNoError={hasNoComposeError}
+                setHasNoError={setHasNoComposeError}
+              />
+            ) : currentComponent === "sender" ? (
+              <Sender senderErrorHandler={senderErrorHandler} />
+            ) : currentComponent === "preview" ? (
               <Preview />
-            </Tab>
-          </Tabs>
-          <div className="next-button">
-            {currentComponent === "compose" ? null : (
+            ) : null}
+          </Card.Body>
+          <Card.Footer>
+            <div className="next-button">
+              {currentComponent === "compose" ? null : (
+                <Button
+                  variant="outline-primary"
+                  className="btn"
+                  id="previous"
+                  onClick={handleClickPrevious}
+                >
+                  <ArrowLeftCircle className="mr-4" />
+                  Previous
+                </Button>
+              )}
               <Button
                 variant="outline-primary"
                 className="btn"
-                id="previous"
-                onClick={handleClickPrevious}
+                style={
+                  currentComponent === "preview"
+                    ? { backgroundColor: "red" }
+                    : null
+                }
+                id="next"
+                onClick={
+                  currentComponent !== "preview" ? handleClickNext : null
+                }
+                disabled={
+                  (hasNoComposeError && currentComponent === "compose") ||
+                  (hasNoSenderError && currentComponent === "sender") ||
+                  currentComponent === "preview"
+                    ? false
+                    : true
+                }
               >
-                <ArrowLeftCircle className="mr-4" />
-                Previous
+                {currentComponent === "preview" ? "Send All" : "Next"}
+                <ArrowRightCircle className="ml-4" />
               </Button>
-            )}
-            <Button
-              variant="outline-primary"
-              className="btn"
-              style={
-                currentComponent === "preview"
-                  ? { backgroundColor: "red" }
-                  : null
-              }
-              id="next"
-              onClick={currentComponent !== "preview" ? handleClickNext : null}
-              disabled={
-                (hasNoComposeError && currentComponent === "compose") ||
-                (hasNoSenderError && currentComponent === "sender") ||
-                currentComponent === "preview"
-                  ? false
-                  : true
-              }
-            >
-              {currentComponent === "preview" ? "Send All" : "Next"}
-              <ArrowRightCircle className="ml-4" />
-            </Button>
-          </div>
+            </div>
+          </Card.Footer>
         </Card>
         <Card className="bootstrap-card"></Card>
       </div>
