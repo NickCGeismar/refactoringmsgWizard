@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { addInfo } from "../redux/msgWizard.js";
 import Modal from "react-modal";
-import { Button } from "react-bootstrap";
-import { ChatDots } from "react-bootstrap-icons";
+import { Button, Form } from "react-bootstrap";
+import { ChatDots, FileX } from "react-bootstrap-icons";
 
 function Compose({
   addTheCompose,
@@ -43,6 +43,10 @@ function Compose({
   //predetermines boolean checkObject states from action_alert response
   useEffect(() => {
     if (msgWizardResponse.action_alert) {
+      setMsgWizardCompose({
+        ...msgWizardCompose,
+        subject: msgWizardResponse.action_alert.subject,
+      });
       msgWizardResponse.action_alert.chambers.forEach((element) => {
         if (element === "president") {
           setShowCheckObjectPresident(true);
@@ -131,7 +135,7 @@ function Compose({
   };
   const errorSubjectHandler = () => {
     if (!msgWizardCompose.subject) {
-      setMsgWizardSubjectErrors("Please input a message");
+      setMsgWizardSubjectErrors("Please input a subject");
       return false;
     } else setMsgWizardSubjectErrors("");
     return true;
@@ -157,9 +161,12 @@ function Compose({
 
   const addToMessage = (event) => {
     event.preventDefault();
+    const newMessage = msgWizardCompose.message
+      ? msgWizardCompose.message + "\n \n" + event.target.innerHTML
+      : event.target.innerHTML;
     setMsgWizardCompose({
       ...msgWizardCompose,
-      message: msgWizardCompose.message + event.target.innerHTML,
+      message: newMessage,
     });
     setModalBool(false);
   };
@@ -168,7 +175,7 @@ function Compose({
 
   return (
     <div>
-      <h1>
+      <h1 style={{ color: "#004fa0", fontFamily: "Crimson Text" }}>
         Take Action: Should congress pass the Religious Freedom Over Mandates
         Act?
       </h1>
@@ -186,7 +193,7 @@ function Compose({
             value="president"
             checked={checkObjectPresident}
           />
-          President
+          &nbsp; President
         </div>
       ) : null}
       {showCheckObjectVicePresident ? (
@@ -200,7 +207,7 @@ function Compose({
             value="senator"
             checked={showCheckObjectVicePresident}
           />
-          Your Vice President
+          &nbsp; Your Vice President
         </div>
       ) : null}
       {showCheckObjectSenator ? (
@@ -212,7 +219,7 @@ function Compose({
             value="senator"
             checked={checkObjectSenator}
           />
-          Your U.S senators
+          &nbsp; Your U.S senators
         </div>
       ) : null}
       {showCheckObjectRepresentative ? (
@@ -226,7 +233,7 @@ function Compose({
             value="representative"
             checked={checkObjectRepresentative}
           />
-          Your U.S representatives
+          &nbsp; Your U.S representatives
         </div>
       ) : null}
       {showCheckObjectGovernor ? (
@@ -238,7 +245,7 @@ function Compose({
             value="representative"
             checked={checkObjectGovernor}
           />
-          Your State Governor
+          &nbsp; Your State Governor
         </div>
       ) : null}
       {showCheckObjectStateSen ? (
@@ -250,7 +257,7 @@ function Compose({
             value="representative"
             checked={checkObjectStateSen}
           />
-          Your State Senator
+          &nbsp; Your State Senator
         </div>
       ) : null}
       {showCheckObjectStateRep ? (
@@ -262,41 +269,58 @@ function Compose({
             value="representative"
             checked={checkObjectStateRep}
           />
-          Your State representatives
+          &nbsp; Your State representatives
         </div>
       ) : null}
-      <div>
-        <h3>Subject*</h3>
-        <form
+      <div style={{ paddingTop: "10px" }}>
+        <h3>
+          Subject<span style={{ color: "red" }}>*</span>
+        </h3>
+        <Form
+          validated={msgWizardCompose.subject ? true : false}
           value="subject"
           onSubmit={(e) => {
             e.preventDefault();
           }}
         >
-          <label>
-            <input
-              className="form-control form-control-lg"
-              onChange={handleInputChange}
-              value={msgWizardCompose.subject}
-              type="text"
-              name="msg-subject"
-            />
-          </label>
+          <Form.Control
+            className="form-control form-control-lg"
+            onChange={handleInputChange}
+            value={msgWizardCompose.subject}
+            type="text"
+            name="msg-subject"
+          />
           <p style={{ color: "red" }}>{msgWizardSubjectErrors}</p>
-        </form>
+        </Form>
       </div>
       <div>
-        <h3>Message*</h3>
-        <Button
-          className=""
-          type="button"
-          onClick={() => setModalBool(true)}
-          value="modal-button"
-          variant="outline-primary"
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
         >
-          <ChatDots className="ml-4" />
-          <p>Talking Points</p>
-        </Button>
+          <h3>
+            Message<span style={{ color: "red" }}>*</span>
+          </h3>
+          <Button
+            style={{
+              display: "flex",
+              flex: "flex-wrap",
+              alignText: "center",
+              alignItems: "center",
+            }}
+            size="sm"
+            type="button"
+            onClick={() => setModalBool(true)}
+            value="modal-button"
+            variant="outline-primary"
+          >
+            <ChatDots className="mr-4" />
+            Talking Points
+          </Button>
+        </div>
         <Modal isOpen={modalBool} onRequestClose={() => setModalBool(false)}>
           {msgWizardResponse.action_alert &&
           Array.isArray(msgWizardResponse.action_alert.talking_points)
@@ -314,25 +338,25 @@ function Compose({
               )
             : null}
         </Modal>
-        <form
+        <Form
+          validated={msgWizardCompose.message ? true : false}
           value="message"
           onSubmit={(e) => {
             e.preventDefault();
           }}
         >
-          <label>
-            <textarea
-              value={msgWizardCompose.message}
-              onChange={handleInputChange}
-              type="text"
-              className="form-control"
-              name="msg-message"
-              rows="5"
-              cols="55"
-            />
-          </label>
+          <Form.Control
+            as="textarea"
+            value={msgWizardCompose.message}
+            onChange={handleInputChange}
+            type="text"
+            className="form-control"
+            name="msg-message"
+            rows="5"
+            cols="55"
+          />
           <p style={{ color: "red" }}>{msgWizardMessageErrors}</p>
-        </form>
+        </Form>
       </div>
     </div>
   );

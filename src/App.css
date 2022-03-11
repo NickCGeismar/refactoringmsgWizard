@@ -10,6 +10,44 @@
   flex-direction: row;
 }
 
+.next-button {
+  display: flex;
+  justify-content: space-evenly;
+}
+.modal-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.sender-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.address-complete-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.edit-button {
+  height: 40px;
+  padding: 10px;
+}
+
+.pt-10 {
+  padding-top: 10px;
+}
+
+.check-box {
+  padding-right: 10px;
+}
+
+.modal-component {
+  padding: 20px !important;
+}
+
 /* Extra small devices (portrait phones, less than 576px) */
 @media (max-width: 575.98px) {
   .app {
@@ -34,7 +72,7 @@
     flex-direction: column !important;
   }
   .bootstrap-card {
-    width: 100%;
+    width: 95%;
   }
 }
 
