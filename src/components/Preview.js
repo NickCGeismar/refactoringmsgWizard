@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import ClipLoader from "react-spinners/ClipLoader";
-import { Tabs, Tab, Button } from "react-bootstrap";
+import { Tabs, Tab, Button, Form } from "react-bootstrap";
 import { EnvelopeDash } from "react-bootstrap-icons";
 import { addInfo } from "../redux/msgWizard.js";
 
@@ -9,8 +9,8 @@ function Preview({ msgWizardResponse, msgWizardSendingInfo, addTheCompose }) {
   // console.log(msgWizardResponse, "response");
   // console.log(msgWizardSendingInfo, "sending");
   const [displayedSenators, setDisplayedSenators] = useState([]);
-  const [currentComponent, setCurrentComponent] = useState("");
   const [excludedSenators, setExcludedSenators] = useState([]);
+  const [sendCopy, setSendCopy] = useState(true);
   // const [sendBoolean, setSendBoolean] = useState({});
 
   useEffect(() => {
@@ -45,8 +45,8 @@ function Preview({ msgWizardResponse, msgWizardSendingInfo, addTheCompose }) {
   }, [msgWizardResponse, msgWizardSendingInfo.recipients]);
 
   useEffect(() => {
-    addTheCompose({ exclude: [...excludedSenators] });
-  }, [excludedSenators]);
+    addTheCompose({ exclude: [...excludedSenators], send_copy: sendCopy });
+  }, [excludedSenators, sendCopy]);
 
   const excludeButton = (event) => {
     event.preventDefault();
@@ -63,18 +63,11 @@ function Preview({ msgWizardResponse, msgWizardSendingInfo, addTheCompose }) {
     <ClipLoader loading={true} size={150} />
   ) : (
     <div>
-      <Tabs
-        activeKey={currentComponent}
-        id="uncontrolled-tab-example"
-        className="mb-3"
-        onSelect={function (evt) {
-          setCurrentComponent(evt);
-        }}
-      >
+      <Tabs defaultActiveKey={0} id="uncontrolled-tab-example" className="mb-3">
         {displayedSenators.map((senator, i) => (
           <Tab
             key={senator.id}
-            eventKey={`${i}`}
+            eventKey={i}
             title={
               <span>
                 <div>
@@ -105,21 +98,38 @@ function Preview({ msgWizardResponse, msgWizardSendingInfo, addTheCompose }) {
             }
             style={{ borderRadius: "50%" }}
           >
-            <Button
-              id={senator.id}
-              variant="outline-danger"
-              onClick={excludeButton}
-            >
-              {msgWizardSendingInfo.exclude.includes(senator.id)
-                ? "Include"
-                : "Exclude"}
-            </Button>
             {!!msgWizardSendingInfo.exclude.includes(senator.id) ? (
-              <p>
+              <p
+                style={{
+                  backgroundColor: "#fbf8e3",
+                  padding: "10px",
+                  color: "#a89269",
+                }}
+              >
                 Letter is excluded and will not be sent. Click "Include" to
                 include this representative.
               </p>
             ) : null}
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <h3
+                style={
+                  msgWizardSendingInfo.exclude.includes(senator.id)
+                    ? { opacity: "0.4" }
+                    : null
+                }
+              >
+                {senator.firstname} {senator.lastname}
+              </h3>
+              <Button
+                id={senator.id}
+                variant="outline-danger"
+                onClick={excludeButton}
+              >
+                {msgWizardSendingInfo.exclude.includes(senator.id)
+                  ? "Include"
+                  : "Exclude"}
+              </Button>
+            </div>
             <div
               style={
                 msgWizardSendingInfo.exclude.includes(senator.id)
@@ -127,11 +137,6 @@ function Preview({ msgWizardResponse, msgWizardSendingInfo, addTheCompose }) {
                   : null
               }
             >
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <h3>
-                  {senator.firstname} {senator.lastname}
-                </h3>
-              </div>
               <p>
                 The Honorable {senator.firstname} {senator.lastname}
               </p>
@@ -150,6 +155,17 @@ function Preview({ msgWizardResponse, msgWizardSendingInfo, addTheCompose }) {
           </Tab>
         ))}
       </Tabs>
+      <div>
+        <Form.Group>
+          <Form.Check
+            onChange={() => setSendCopy(!sendCopy)}
+            type="checkbox"
+            name="president"
+            label="Send a copy of the letter to me"
+            checked={sendCopy}
+          />
+        </Form.Group>
+      </div>
     </div>
   );
 }

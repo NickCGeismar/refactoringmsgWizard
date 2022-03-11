@@ -58,6 +58,8 @@ function App({ prefillAlert, msgWizard }) {
       <div className="card-container">
         <Card className="bootstrap-card">
           <Tabs
+            mountOnEnter
+            variant={"pills"}
             activeKey={currentComponent}
             id="uncontrolled-tab-example"
             className="mb-3"
@@ -73,11 +75,13 @@ function App({ prefillAlert, msgWizard }) {
                 </span>
               }
             >
-              <Compose
-                composeErrorHandler={composeErrorHandler}
-                hasNoError={hasNoComposeError}
-                setHasNoError={setHasNoComposeError}
-              />
+              <Card.Body>
+                <Compose
+                  composeErrorHandler={composeErrorHandler}
+                  hasNoError={hasNoComposeError}
+                  setHasNoError={setHasNoComposeError}
+                />
+              </Card.Body>
             </Tab>
             <Tab
               title={
@@ -143,7 +147,8 @@ function App({ prefillAlert, msgWizard }) {
               onClick={currentComponent !== "preview" ? handleClickNext : null}
               disabled={
                 (hasNoComposeError && currentComponent === "compose") ||
-                (hasNoSenderError && currentComponent === "sender")
+                (hasNoSenderError && currentComponent === "sender") ||
+                currentComponent === "preview"
                   ? false
                   : true
               }
@@ -153,62 +158,7 @@ function App({ prefillAlert, msgWizard }) {
             </Button>
           </div>
         </Card>
-        {/* <Card className="bootstrap-card">
-          <Tabs
-            activeKey={currentComponent}
-            id="uncontrolled-tab-example"
-            className="mb-3"
-            onSelect={function (evt) {
-              setCurrentComponent(evt);
-            }}
-          >
-            <Tab eventKey="compose" title="compose">
-              <Compose />
-            </Tab>
-            <Tab
-              eventKey="sender"
-              title="sender"
-              disabled={currentComponent === "preview" ? false : true}
-            >
-              <Sender />
-            </Tab>
-
-            <Tab
-              eventKey="preview"
-              title="preview"
-              disabled={currentComponent !== "preview" ? true : false}
-            >
-              <Preview />
-            </Tab>
-          </Tabs>
-          <div className="next-button">
-            {currentComponent === "compose" ? null : (
-              <Button
-                variant="outline-primary"
-                className="btn"
-                id="previous"
-                onClick={handleClickPrevious}
-              >
-                <ArrowLeftCircle className="mr-4" />
-                Previous
-              </Button>
-            )}
-            <Button
-              variant="outline-primary"
-              className="btn"
-              style={
-                currentComponent === "preview"
-                  ? { backgroundColor: "red" }
-                  : null
-              }
-              id="next"
-              onClick={currentComponent !== "preview" ? handleClickNext : null}
-            >
-              {currentComponent === "preview" ? "Send All" : "Next"}
-              <ArrowRightCircle className="ml-4" />
-            </Button>
-          </div>
-        </Card> */}
+        <Card className="bootstrap-card"></Card>
       </div>
     </div>
   );
