@@ -37,7 +37,9 @@ function Sender({
   const [formInfo, setFormInfo] = useState({});
 
   useEffect(() => {
-    setFormInfo({ ...msgWizardSenderInfo });
+    setFormInfo({
+      ...msgWizardSenderInfo,
+    });
   }, [msgWizardSenderInfo]);
   useEffect(() => {
     senderErrorHandler(addressFullError, personError);
@@ -130,10 +132,21 @@ function Sender({
     if (event.type === "click") {
       event.preventDefault();
     }
-    addTheSender({ ...formInfo });
+    addTheSender({
+      ...formInfo,
+      address1: formInfo.address1
+        .split(" ")
+        .map(
+          (word) => word.slice(0, 1).toUpperCase() + word.slice(1, word.length)
+        )
+        .join(" "),
+    });
     setModalObj({ modalBool: false });
+
     if (event && event.target.id === "save-address") {
-      lookupTheSenators({ ...formInfo });
+      lookupTheSenators({
+        ...formInfo,
+      });
     }
   };
 
@@ -215,7 +228,15 @@ function Sender({
             ) : (
               <div className="address-complete-section">
                 <address>
-                  {msgWizardSenderInfo.address1} {msgWizardSenderInfo.address2}
+                  {msgWizardSenderInfo.address1
+                    .split(" ")
+                    .map(
+                      (word) =>
+                        word.slice(0, 1).toUpperCase() +
+                        word.slice(1, word.length)
+                    )
+                    .join(" ")}{" "}
+                  {msgWizardSenderInfo.address2}
                   <br />
                   {msgWizardSenderInfo.city}, {msgWizardSenderInfo.state}{" "}
                   {msgWizardSenderInfo.zip}
