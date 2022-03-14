@@ -150,7 +150,13 @@ function Preview({ msgWizardResponse, msgWizardSendingInfo, addTheCompose }) {
                 Dear {senator.firstname} {senator.lastname}:
               </p>
               <p>Regarding {msgWizardSendingInfo.subject},</p>
+              <br />
               <p>{msgWizardSendingInfo.message}</p>
+              <br />
+              <p>
+                Sincerely, <br />
+                {msgWizardSendingInfo.firstname} {msgWizardSendingInfo.lastname}
+              </p>
             </div>
           </Tab>
         ))}

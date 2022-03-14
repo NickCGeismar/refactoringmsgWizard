@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { addInfo } from "../redux/msgWizard.js";
-import Modal from "react-modal";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Modal, ListGroup } from "react-bootstrap";
 import { ChatDots, FileX } from "react-bootstrap-icons";
 
 function Compose({
   addTheCompose,
   msgWizardResponse,
+  msgWizardSenderInfo,
   setHasNoError,
   composeErrorHandler,
 }) {
@@ -44,8 +44,10 @@ function Compose({
   useEffect(() => {
     if (msgWizardResponse.action_alert) {
       setMsgWizardCompose({
-        ...msgWizardCompose,
-        subject: msgWizardResponse.action_alert.subject,
+        message:
+          msgWizardSenderInfo.message || msgWizardResponse.action_alert.message,
+        subject:
+          msgWizardSenderInfo.subject || msgWizardResponse.action_alert.subject,
       });
       msgWizardResponse.action_alert.chambers.forEach((element) => {
         if (element === "president") {
@@ -170,8 +172,6 @@ function Compose({
     });
     setModalBool(false);
   };
-
-  Modal.setAppElement("body");
 
   return (
     <div>
@@ -321,22 +321,36 @@ function Compose({
             Talking Points
           </Button>
         </div>
-        <Modal isOpen={modalBool} onRequestClose={() => setModalBool(false)}>
-          {msgWizardResponse.action_alert &&
-          Array.isArray(msgWizardResponse.action_alert.talking_points)
-            ? msgWizardResponse.action_alert.talking_points.map(
-                (talkingP, i) => (
-                  <Button
-                    variant="light"
-                    className="form-control"
-                    onClick={addToMessage}
-                    key={i}
-                  >
-                    {talkingP}
-                  </Button>
-                )
-              )
-            : null}
+        <Modal show={modalBool} onHide={() => setModalBool(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title
+              style={{ color: "#004fa0", fontFamily: "Crimson Text" }}
+            >
+              Talking Points
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>Click a writing prompt to help you compose your message.</p>
+            <ListGroup>
+              {msgWizardResponse.action_alert &&
+              Array.isArray(msgWizardResponse.action_alert.talking_points)
+                ? msgWizardResponse.action_alert.talking_points.map(
+                    (talkingP, i) => (
+                      <ListGroup.Item key={i}>
+                        <Button
+                          variant="light"
+                          className="form-control"
+                          onClick={addToMessage}
+                          key={i}
+                        >
+                          "{talkingP}"
+                        </Button>
+                      </ListGroup.Item>
+                    )
+                  )
+                : null}
+            </ListGroup>
+          </Modal.Body>
         </Modal>
         <Form
           validated={msgWizardCompose.message ? true : false}
@@ -364,6 +378,7 @@ function Compose({
 
 const mapState = (state) => ({
   msgWizardResponse: state.msgWizard.response,
+  msgWizardSenderInfo: state.msgWizard.sendingInfo,
 });
 
 const mapDispatch = (dispatch) => ({
