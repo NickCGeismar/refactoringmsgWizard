@@ -110,7 +110,13 @@ function Preview({ msgWizardResponse, msgWizardSendingInfo, addTheCompose }) {
                 include this representative.
               </p>
             ) : null}
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                paddingBottom: "20px",
+              }}
+            >
               <h3
                 style={
                   msgWizardSendingInfo.exclude.includes(senator.id)
@@ -118,7 +124,7 @@ function Preview({ msgWizardResponse, msgWizardSendingInfo, addTheCompose }) {
                     : null
                 }
               >
-                {senator.firstname} {senator.lastname}
+                {senator.full_name}
               </h3>
               <Button
                 id={senator.id}
@@ -134,7 +140,11 @@ function Preview({ msgWizardResponse, msgWizardSendingInfo, addTheCompose }) {
               style={
                 msgWizardSendingInfo.exclude.includes(senator.id)
                   ? { opacity: "0.4" }
-                  : null
+                  : {
+                      backgroundColor: "whitesmoke",
+                      borderRadius: "2%",
+                      padding: "5px",
+                    }
               }
             >
               <p>
@@ -153,15 +163,15 @@ function Preview({ msgWizardResponse, msgWizardSendingInfo, addTheCompose }) {
               <br />
               <p>{msgWizardSendingInfo.message}</p>
               <br />
-              <p>
+              <span>
                 Sincerely, <br />
                 {msgWizardSendingInfo.firstname} {msgWizardSendingInfo.lastname}
-              </p>
+              </span>
             </div>
           </Tab>
         ))}
       </Tabs>
-      <div>
+      <div style={{ paddingTop: "5px" }}>
         <Form.Group>
           <Form.Check
             onChange={() => setSendCopy(!sendCopy)}

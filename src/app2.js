@@ -4,7 +4,7 @@ import Compose from "./components/Compose.js";
 import Preview from "./components/Preview.js";
 import Sender from "./components/Sender.js";
 import { connect } from "react-redux";
-import { prefillActionAlert } from "./redux/msgWizard.js";
+import msgWizard, { prefillActionAlert } from "./redux/msgWizard.js";
 import {
   ArrowLeftCircle,
   ArrowRightCircle,
@@ -14,7 +14,7 @@ import {
 } from "react-bootstrap-icons";
 import { Tabs, Tab, Card, Button } from "react-bootstrap";
 
-function App({ prefillAlert, msgWizard }) {
+function App({ prefillAlert, msgWizardResponse }) {
   useEffect(() => {
     prefillAlert();
   }, []);
@@ -56,6 +56,34 @@ function App({ prefillAlert, msgWizard }) {
   return (
     <div className="app">
       <div className="card-container">
+        <Card className="bootstrap-card">
+          <div className="action-alert-div">
+            <img
+              style={{ maxHeight: "10em", maxWidth: "8em" }}
+              src="https://nwyc.dev.cvoice.io/static/images/nwyc/action_alert.png?q=1647038371"
+            />
+          </div>
+          {/* <Card.Header className="card-header-action-alert"> */}
+          <h1 style={{ display: "flex", justifyContent: "center" }}>
+            <span className="h1-final-subject">
+              {msgWizardResponse.final_subject}
+            </span>
+          </h1>
+          {/* </Card.Header> */}
+          <Card.Body
+            style={{ backgroundColor: "whitesmoke", borderRadius: "3%" }}
+          >
+            {console.log(msgWizardResponse.action_alert)}
+            {msgWizardResponse.action_alert &&
+            msgWizardResponse.action_alert.summary ? (
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: msgWizardResponse.action_alert.summary,
+                }}
+              />
+            ) : null}
+          </Card.Body>
+        </Card>
         <Card className="bootstrap-card">
           <Card.Header>
             <Tabs
@@ -176,14 +204,13 @@ function App({ prefillAlert, msgWizard }) {
             </div>
           </Card.Footer>
         </Card>
-        <Card className="bootstrap-card"></Card>
       </div>
     </div>
   );
 }
 
 const mapState = (state) => ({
-  msgWizard: state.msgWizard,
+  msgWizardResponse: state.msgWizard.response,
 });
 
 const mapDispatch = (dispatch) => ({

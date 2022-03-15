@@ -456,7 +456,22 @@ function Sender({
               <div className="address-complete-section">
                 <address>
                   {msgWizardSenderInfo.salutation}{" "}
-                  {msgWizardSenderInfo.firstname} {msgWizardSenderInfo.lastname}
+                  {msgWizardSenderInfo.firstname
+                    .split(" ")
+                    .map(
+                      (word) =>
+                        word.slice(0, 1).toUpperCase() +
+                        word.slice(1, word.length)
+                    )
+                    .join(" ")}{" "}
+                  {msgWizardSenderInfo.lastname
+                    .split(" ")
+                    .map(
+                      (word) =>
+                        word.slice(0, 1).toUpperCase() +
+                        word.slice(1, word.length)
+                    )
+                    .join(" ")}
                   <br />
                   {msgWizardSenderInfo.email}
                   <br />
