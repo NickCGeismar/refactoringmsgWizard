@@ -52,31 +52,45 @@ function Compose({
       msgWizardResponse.action_alert.chambers.forEach((element) => {
         if (element === "president") {
           setShowCheckObjectPresident(true);
-          setCheckObjectPresident(true);
+          if (msgWizardSenderInfo.recipients.includes("president")) {
+            setCheckObjectPresident(true);
+          }
         }
         if (element === "sen") {
           setShowCheckObjectSenator(true);
-          setCheckObjectSenator(true);
+          if (msgWizardSenderInfo.recipients.includes("sen")) {
+            setCheckObjectSenator(true);
+          }
         }
         if (element === "rep") {
           setShowCheckObjectRepresentative(true);
-          setCheckObjectRepresentative(true);
+          if (msgWizardSenderInfo.recipients.includes("rep")) {
+            setCheckObjectRepresentative(true);
+          }
         }
         if (element === "vice-president") {
           setShowCheckObjectVicePresident(true);
-          setCheckObjectVicePresident(true);
+          if (msgWizardSenderInfo.recipients.includes("vice-president")) {
+            setCheckObjectVicePresident(true);
+          }
         }
         if (element === "governor") {
           setShowCheckObjectGovernor(true);
-          setCheckObjectGovernor(true);
+          if (msgWizardSenderInfo.recipients.includes("governor")) {
+            setCheckObjectGovernor(true);
+          }
         }
         if (element === "state-sen") {
           setShowCheckObjectStateSen(true);
-          setCheckObjectStateSen(true);
+          if (msgWizardSenderInfo.recipients.includes("state-sen")) {
+            setCheckObjectStateSen(true);
+          }
         }
         if (element === "state-rep") {
           setShowCheckObjectStateRep(true);
-          setCheckObjectStateRep(true);
+          if (msgWizardSenderInfo.recipients.includes("state-rep")) {
+            setCheckObjectStateRep(true);
+          }
         }
       });
     }
@@ -176,8 +190,10 @@ function Compose({
   return (
     <div>
       <h1 style={{ color: "#004fa0", fontFamily: "Crimson Text" }}>
-        Take Action: Should congress pass the Religious Freedom Over Mandates
-        Act?
+        {msgWizardResponse.action_alert &&
+        msgWizardResponse.action_alert.message_question
+          ? msgWizardResponse.action_alert.message_question
+          : null}
       </h1>
       <p>
         In the text boxes below, type your thoughts, concerns and how you stand
@@ -343,7 +359,7 @@ function Compose({
                           onClick={addToMessage}
                           key={i}
                         >
-                          "{talkingP}"
+                          {talkingP}
                         </Button>
                       </ListGroup.Item>
                     )
