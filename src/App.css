@@ -9,6 +9,7 @@
   width: 100vw;
   flex-direction: row;
   justify-content: center;
+  align-items: flex-start;
 }
 
 .card-header-action-alert {
@@ -34,7 +35,6 @@
 .h1-final-subject {
   color: #004fa0;
   font-family: Crimson Text;
-  align-items: center;
 }
 
 .sender-card {
@@ -88,9 +88,11 @@
 @media (max-width: 1199.98px) {
   .card-container {
     flex-direction: column !important;
+    align-items: center;
+    width: auto;
   }
   .bootstrap-card {
-    width: 93%;
+    width: 90%;
   }
 
   .h1-final-subject {
