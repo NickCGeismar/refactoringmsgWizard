@@ -28,6 +28,8 @@ export const addInfo = (passedInfo) => (dispatch) => {
   }
 };
 
+//real actionAlert = 1767
+//fake actionAlert = 928
 export const prefillActionAlert =
   (actionId = 1767) =>
   async (dispatch) => {
@@ -54,8 +56,16 @@ export const prefillActionAlert =
       );
       const dataAlert = await actionAlert.json();
       const dataResponse = await actionResponse.json();
-      dispatch(fetchedInfoResponse(dataResponse));
-      dispatch(fetchedInfoActionAlert(dataAlert));
+      if (
+        Object.keys(dataAlert).length !== 0 &&
+        dataResponse.response !== null
+      ) {
+        dispatch(fetchedInfoResponse(dataResponse));
+        dispatch(fetchedInfoActionAlert(dataAlert));
+      } else {
+        dispatch(fetchedInfoResponse({ response: null }));
+        throw Error("404 Action Alert Not Found");
+      }
     } catch (error) {
       console.log(error);
     }

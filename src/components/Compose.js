@@ -42,7 +42,10 @@ function Compose({
 
   //predetermines boolean checkObject states from action_alert response
   useEffect(() => {
-    if (msgWizardResponse.action_alert) {
+    if (
+      msgWizardResponse.action_alert &&
+      msgWizardResponse.action_alert.chambers
+    ) {
       setMsgWizardCompose({
         message:
           msgWizardSenderInfo.message || msgWizardResponse.action_alert.message,
