@@ -53,8 +53,11 @@ function App({ prefillAlert, msgWizardResponse }) {
       setHasNoSenderError(true);
     } else setHasNoSenderError(false);
   };
-  return (
+  return msgWizardResponse.response === null ? (
+    "404 not found"
+  ) : (
     <div className="app">
+      {console.log(msgWizardResponse)}
       <div className="card-container">
         <Card className="bootstrap-card">
           <div className="action-alert-div">
@@ -73,7 +76,6 @@ function App({ prefillAlert, msgWizardResponse }) {
           <Card.Body
             style={{ backgroundColor: "whitesmoke", borderRadius: "3%" }}
           >
-            {console.log(msgWizardResponse.action_alert)}
             {msgWizardResponse.action_alert &&
             msgWizardResponse.action_alert.summary ? (
               <div
