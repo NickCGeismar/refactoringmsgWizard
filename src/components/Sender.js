@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { addInfo, lookupSenators } from "../redux/msgWizard.js";
+import msgWizard, { addInfo, lookupSenators } from "../redux/msgWizard.js";
 import { connect } from "react-redux";
 import { Button, Card, Form, Modal } from "react-bootstrap";
 import { isValidPhoneNumber } from "libphonenumber-js";
+import ClipLoader from "react-spinners/ClipLoader";
 import { validate as emailValidator } from "email-validator";
 import { notEmptyValidator, zipCodeValidator } from "../validations.js";
 
@@ -158,7 +159,13 @@ function Sender({
     });
   };
 
-  return (
+  //Object.keys(msgWizardSenderInfo).length === 0 || !msgWizardSenderInfo.firstname
+  return Object.keys(msgWizardSenderInfo).length === 0 ||
+    !msgWizardSenderInfo.firstname ? (
+    <div style={{ display: "flex", justifyContent: "center" }}>
+      <ClipLoader loading={true} size={150} />
+    </div>
+  ) : (
     <div>
       Please confirm that the information below is correct. Click the 'Edit'
       button to change the info.
