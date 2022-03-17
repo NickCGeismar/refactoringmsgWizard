@@ -26,18 +26,13 @@ function App({ prefillAlert, msgWizardResponse }) {
   const handleClickNext = (event) => {
     event.preventDefault();
     if (currentComponent === "compose") {
-      setCurrentComponent("sender");
-    }
-    if (currentComponent === "sender") {
       setCurrentComponent("preview");
     }
   };
   const handleClickPrevious = (event) => {
+    console.log(currentComponent);
     event.preventDefault();
     if (currentComponent === "preview") {
-      setCurrentComponent("sender");
-    }
-    if (currentComponent === "sender") {
       setCurrentComponent("compose");
     }
   };
@@ -85,19 +80,63 @@ function App({ prefillAlert, msgWizardResponse }) {
             ) : null}
           </Card.Body>
         </Card>
-        <Card className="bootstrap-card">
-          <Compose
-            composeErrorHandler={composeErrorHandler}
-            hasNoError={hasNoComposeError}
-            setHasNoError={setHasNoComposeError}
-          />
-        </Card>
-        <Card className="bootstrap-card">
-          <Sender senderErrorHandler={senderErrorHandler} />
-        </Card>
-        <Card className="bootstrap-card">
-          <Preview />
-        </Card>
+        {currentComponent === "compose" ? (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Card className="bootstrap-card">
+              <Compose
+                composeErrorHandler={composeErrorHandler}
+                hasNoError={hasNoComposeError}
+                setHasNoError={setHasNoComposeError}
+              />
+            </Card>
+            <Card className="bootstrap-card">
+              <Sender senderErrorHandler={senderErrorHandler} />
+            </Card>
+          </div>
+        ) : currentComponent === "preview" ? (
+          <Card className="bootstrap-card">
+            <Preview />
+          </Card>
+        ) : null}
+        <div className="next-button">
+          {currentComponent === "compose" ? null : (
+            <Button
+              variant="outline-primary"
+              className="btn"
+              id="previous"
+              onClick={handleClickPrevious}
+            >
+              <ArrowLeftCircle className="mr-4" />
+              Previous
+            </Button>
+          )}
+          <Button
+            variant="outline-primary"
+            className="btn"
+            style={
+              currentComponent === "preview" ? { backgroundColor: "red" } : null
+            }
+            id="next"
+            onClick={currentComponent !== "preview" ? handleClickNext : null}
+            disabled={
+              (hasNoComposeError &&
+                hasNoSenderError &&
+                currentComponent === "compose") ||
+              currentComponent === "preview"
+                ? false
+                : true
+            }
+          >
+            {currentComponent === "preview" ? "Send All" : "Next"}
+            <ArrowRightCircle className="ml-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );

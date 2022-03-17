@@ -27,6 +27,18 @@
   width: 42%;
   height: 30em;
   overflow-y: auto;
+  border-style: ridge;
+  border-radius: 10%;
+  padding: 22px;
+}
+
+.talking-points-div::-webkit-scrollbar {
+  /* width: 30px; */
+  /* height: 30%; */
+}
+
+.talking-points-div::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .next-button {
@@ -92,6 +104,8 @@
 @media (max-width: 1182px) {
   .talking-points-div {
     width: auto;
+    border-style: none;
+    border-radius: 0%;
   }
   .message-subject-checkbox-div {
     width: 100%;

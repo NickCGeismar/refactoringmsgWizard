@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { addInfo } from "../redux/msgWizard.js";
 import { Button, Form, Modal, ListGroup } from "react-bootstrap";
-import { ChatDots, FileX } from "react-bootstrap-icons";
+import { ArrowLeftCircle } from "react-bootstrap-icons";
 
 function Compose({
   addTheCompose,
@@ -334,7 +334,6 @@ function Compose({
           </div>
           <div>
             <Form
-              validated={msgWizardCompose.message ? true : false}
               value="message"
               onSubmit={(e) => {
                 e.preventDefault();
@@ -362,7 +361,18 @@ function Compose({
             Array.isArray(msgWizardResponse.action_alert.talking_points)
               ? msgWizardResponse.action_alert.talking_points.map(
                   (talkingP, i) => (
-                    <ListGroup.Item key={i}>
+                    <ListGroup.Item
+                      key={i}
+                      style={{ display: "flex", alignItems: "center" }}
+                    >
+                      <ArrowLeftCircle
+                        style={{
+                          paddingRight: "5px",
+                          color: "blue",
+                          height: "20px",
+                          width: "20px",
+                        }}
+                      />
                       <button
                         variant="light"
                         className="form-control"
